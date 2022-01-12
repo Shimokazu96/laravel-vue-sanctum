@@ -23389,31 +23389,45 @@ buildApp(); // new Vue({
 /*!***********************************!*\
   !*** ./resources/js/bootstrap.js ***!
   \***********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util */ "./resources/js/util.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+
 
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 try {
   __webpack_require__(/*! bootstrap */ "./node_modules/bootstrap/dist/js/bootstrap.esm.js");
-} catch (e) {} // import { getCookieValue } from "./util";
+} catch (e) {} // window.axios=require('axios');
 
 
-window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios = (axios__WEBPACK_IMPORTED_MODULE_1___default()); // リクエストを送るときに実行する処理
+
+window.axios.interceptors.request.use(function (config) {
+  // クッキーからトークンを取り出してヘッダーに添付する
+  config.headers["X-XSRF-TOKEN"] = (0,_util__WEBPACK_IMPORTED_MODULE_0__.getCookieValue)("XSRF-TOKEN");
+  return config;
+}); // レスポンスを受けた後の処理を上書きする
+// これを書くことでstore/auth.tsのユーザー登録、ログイン、ログアウト、ログインユーザー取得で毎回
+// .catch(error => error.response || error)を書かなくて済む
+
+window.axios.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  return error.response || error;
+}); // Ajaxリクエストであることを示すヘッダーを付与する
+
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 window.axios.defaults.withCredentials = true;
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */
-// import Echo from 'laravel-echo';
-// window.Pusher = require('pusher-js');
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     forceTLS: true
-// });
 
 /***/ }),
 
@@ -23518,7 +23532,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var state = {
   user: null,
   apiStatus: null,
-  loginErrorMessages: null
+  loginErrorMessages: null,
+  registerErrorMessages: null
 };
 var getters = {
   check: function check(state) {
@@ -23537,9 +23552,13 @@ var mutations = {
   },
   setLoginErrorMessages: function setLoginErrorMessages(state, messages) {
     state.loginErrorMessages = messages;
+  },
+  setRegisterErrorMessages: function setRegisterErrorMessages(state, messages) {
+    state.registerErrorMessages = messages;
   }
 };
 var actions = {
+  // 会員登録
   register: function register(context, data) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
       var response;
@@ -23547,14 +23566,35 @@ var actions = {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              context.commit("setApiStatus", null);
+              _context.next = 3;
               return axios.post("/api/register", data);
 
-            case 2:
+            case 3:
               response = _context.sent;
-              context.commit("setUser", response.data);
 
-            case 4:
+              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__.CREATED)) {
+                _context.next = 8;
+                break;
+              }
+
+              context.commit("setApiStatus", true);
+              context.commit("setUser", response.data);
+              return _context.abrupt("return", false);
+
+            case 8:
+              context.commit("setApiStatus", false);
+
+              if (response.status === _util__WEBPACK_IMPORTED_MODULE_1__.UNPROCESSABLE_ENTITY) {
+                context.commit("setRegisterErrorMessages", response.data.errors);
+              } else {
+                // 別モジュール（ストア）のミューテーションを呼び出す場合は第三引数に{ root: true }を定義
+                context.commit("error/setCode", response.status, {
+                  root: true
+                });
+              }
+
+            case 10:
             case "end":
               return _context.stop();
           }
@@ -23562,6 +23602,7 @@ var actions = {
       }, _callee);
     }))();
   },
+  // ログイン
   login: function login(context, data) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
       var response;
@@ -23574,16 +23615,13 @@ var actions = {
                 withCredentials: true
               });
               _context2.next = 4;
-              return axios.post("/api/login", data)["catch"](function (err) {
-                return err.response || err;
-              });
+              return axios.post("/api/login", data);
 
             case 4:
               response = _context2.sent;
-              console.log(response.status);
 
               if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__.OK)) {
-                _context2.next = 10;
+                _context2.next = 9;
                 break;
               }
 
@@ -23591,7 +23629,7 @@ var actions = {
               context.commit("setUser", response.data);
               return _context2.abrupt("return", false);
 
-            case 10:
+            case 9:
               context.commit("setApiStatus", false);
 
               if (response.status === _util__WEBPACK_IMPORTED_MODULE_1__.UNPROCESSABLE_ENTITY) {
@@ -23602,7 +23640,7 @@ var actions = {
                 });
               }
 
-            case 12:
+            case 11:
             case "end":
               return _context2.stop();
           }
@@ -23610,6 +23648,7 @@ var actions = {
       }, _callee2);
     }))();
   },
+  // ログアウト
   logout: function logout(context) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
       var response;
@@ -23617,14 +23656,29 @@ var actions = {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.next = 2;
+              context.commit("setApiStatus", null);
+              _context3.next = 3;
               return axios.post("/api/logout");
 
-            case 2:
+            case 3:
               response = _context3.sent;
-              context.commit("setUser", null);
 
-            case 4:
+              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__.OK)) {
+                _context3.next = 8;
+                break;
+              }
+
+              context.commit("setApiStatus", true);
+              context.commit("setUser", null);
+              return _context3.abrupt("return", false);
+
+            case 8:
+              context.commit("setApiStatus", false);
+              context.commit("error/setCode", response.status, {
+                root: true
+              });
+
+            case 10:
             case "end":
               return _context3.stop();
           }
@@ -23632,6 +23686,7 @@ var actions = {
       }, _callee3);
     }))();
   },
+  // ログインユーザーチェック
   currentUser: function currentUser(context) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
       var response, user;
@@ -23639,15 +23694,30 @@ var actions = {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              _context4.next = 2;
+              context.commit("setApiStatus", null);
+              _context4.next = 3;
               return axios.get("/api/user");
 
-            case 2:
+            case 3:
               response = _context4.sent;
               user = response.data || null;
-              context.commit("setUser", user);
 
-            case 5:
+              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__.OK)) {
+                _context4.next = 9;
+                break;
+              }
+
+              context.commit("setApiStatus", true);
+              context.commit("setUser", user);
+              return _context4.abrupt("return", false);
+
+            case 9:
+              context.commit("setApiStatus", false);
+              context.commit("error/setCode", response.status, {
+                root: true
+              });
+
+            case 11:
             case "end":
               return _context4.stop();
           }

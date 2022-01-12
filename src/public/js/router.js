@@ -17812,7 +17812,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var state = {
   user: null,
   apiStatus: null,
-  loginErrorMessages: null
+  loginErrorMessages: null,
+  registerErrorMessages: null
 };
 var getters = {
   check: function check(state) {
@@ -17831,9 +17832,13 @@ var mutations = {
   },
   setLoginErrorMessages: function setLoginErrorMessages(state, messages) {
     state.loginErrorMessages = messages;
+  },
+  setRegisterErrorMessages: function setRegisterErrorMessages(state, messages) {
+    state.registerErrorMessages = messages;
   }
 };
 var actions = {
+  // 会員登録
   register: function register(context, data) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
       var response;
@@ -17841,14 +17846,35 @@ var actions = {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              context.commit("setApiStatus", null);
+              _context.next = 3;
               return axios.post("/api/register", data);
 
-            case 2:
+            case 3:
               response = _context.sent;
-              context.commit("setUser", response.data);
 
-            case 4:
+              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__.CREATED)) {
+                _context.next = 8;
+                break;
+              }
+
+              context.commit("setApiStatus", true);
+              context.commit("setUser", response.data);
+              return _context.abrupt("return", false);
+
+            case 8:
+              context.commit("setApiStatus", false);
+
+              if (response.status === _util__WEBPACK_IMPORTED_MODULE_1__.UNPROCESSABLE_ENTITY) {
+                context.commit("setRegisterErrorMessages", response.data.errors);
+              } else {
+                // 別モジュール（ストア）のミューテーションを呼び出す場合は第三引数に{ root: true }を定義
+                context.commit("error/setCode", response.status, {
+                  root: true
+                });
+              }
+
+            case 10:
             case "end":
               return _context.stop();
           }
@@ -17856,6 +17882,7 @@ var actions = {
       }, _callee);
     }))();
   },
+  // ログイン
   login: function login(context, data) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
       var response;
@@ -17868,16 +17895,13 @@ var actions = {
                 withCredentials: true
               });
               _context2.next = 4;
-              return axios.post("/api/login", data)["catch"](function (err) {
-                return err.response || err;
-              });
+              return axios.post("/api/login", data);
 
             case 4:
               response = _context2.sent;
-              console.log(response.status);
 
               if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__.OK)) {
-                _context2.next = 10;
+                _context2.next = 9;
                 break;
               }
 
@@ -17885,7 +17909,7 @@ var actions = {
               context.commit("setUser", response.data);
               return _context2.abrupt("return", false);
 
-            case 10:
+            case 9:
               context.commit("setApiStatus", false);
 
               if (response.status === _util__WEBPACK_IMPORTED_MODULE_1__.UNPROCESSABLE_ENTITY) {
@@ -17896,7 +17920,7 @@ var actions = {
                 });
               }
 
-            case 12:
+            case 11:
             case "end":
               return _context2.stop();
           }
@@ -17904,6 +17928,7 @@ var actions = {
       }, _callee2);
     }))();
   },
+  // ログアウト
   logout: function logout(context) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
       var response;
@@ -17911,14 +17936,29 @@ var actions = {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.next = 2;
+              context.commit("setApiStatus", null);
+              _context3.next = 3;
               return axios.post("/api/logout");
 
-            case 2:
+            case 3:
               response = _context3.sent;
-              context.commit("setUser", null);
 
-            case 4:
+              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__.OK)) {
+                _context3.next = 8;
+                break;
+              }
+
+              context.commit("setApiStatus", true);
+              context.commit("setUser", null);
+              return _context3.abrupt("return", false);
+
+            case 8:
+              context.commit("setApiStatus", false);
+              context.commit("error/setCode", response.status, {
+                root: true
+              });
+
+            case 10:
             case "end":
               return _context3.stop();
           }
@@ -17926,6 +17966,7 @@ var actions = {
       }, _callee3);
     }))();
   },
+  // ログインユーザーチェック
   currentUser: function currentUser(context) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
       var response, user;
@@ -17933,15 +17974,30 @@ var actions = {
         while (1) {
           switch (_context4.prev = _context4.next) {
             case 0:
-              _context4.next = 2;
+              context.commit("setApiStatus", null);
+              _context4.next = 3;
               return axios.get("/api/user");
 
-            case 2:
+            case 3:
               response = _context4.sent;
               user = response.data || null;
-              context.commit("setUser", user);
 
-            case 5:
+              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_1__.OK)) {
+                _context4.next = 9;
+                break;
+              }
+
+              context.commit("setApiStatus", true);
+              context.commit("setUser", user);
+              return _context4.abrupt("return", false);
+
+            case 9:
+              context.commit("setApiStatus", false);
+              context.commit("error/setCode", response.status, {
+                root: true
+              });
+
+            case 11:
             case "end":
               return _context4.stop();
           }
