@@ -4,35 +4,39 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Exception;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller
 {
 
     use AuthenticatesUsers;
 
-    public function login(Request $request): JsonResponse
+    public function login(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->validated();
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             return response()->json($user, 200);
-        } else {
-            return response()->json(['status_code' => 422, 'message' => 'Unauthorized'], 422);
         }
-        throw new Exception('ログインに失敗しました。再度お試しください');
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['パスワードまたはEmailが間違っています。'],
+            ]);
+        }
     }
 
-    // protected function authenticated(Request $request, $user)
-    // {
-    //     return $user;
-    // }
+    protected function authenticated(Request $request, $user)
+    {
+        return $user;
+    }
 
     public function logout(Request $request)
     {
