@@ -3,6 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginRequest extends FormRequest
 {
@@ -13,7 +16,7 @@ class LoginRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +27,16 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required'
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $res = response()->json([
+            'status' => Response::HTTP_BAD_REQUEST,
+            'errors' => $validator->errors(),
+        ], 422);
+        throw new HttpResponseException($res);
     }
 }

@@ -25,4 +25,17 @@ class RegisterController extends Controller
         $this->guard()->login($user);
         return response()->json($user, Response::HTTP_OK);
     }
+
+    /**
+     * オーバーライド（src/vendor/laravel/framework/src/Illuminate/Foundation/Auth/RegistersUsers.php）
+     * 登録成功後は登録ユーザーの情報を返す
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    public function registered(Request $request, $user)
+    {
+        return $user;
+    }
 }

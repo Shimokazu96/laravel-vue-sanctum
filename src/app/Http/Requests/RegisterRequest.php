@@ -9,11 +9,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegisterRequest extends FormRequest
 {
-    public function authorize() {
+    public function authorize()
+    {
         return true;
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
             'name'    => ['required', 'between:1,10', 'unique:users'],
             'email'    => ['required', 'email', 'unique:users'],
@@ -21,12 +23,12 @@ class RegisterRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator) {
+    protected function failedValidation(Validator $validator)
+    {
         $res = response()->json([
             'status' => Response::HTTP_BAD_REQUEST,
             'errors' => $validator->errors(),
-        ], Response::HTTP_BAD_REQUEST);
+        ], 422);
         throw new HttpResponseException($res);
     }
-
 }
