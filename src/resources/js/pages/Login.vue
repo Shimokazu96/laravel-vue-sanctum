@@ -3,21 +3,21 @@
     <ul class="tab">
       <li
         class="tab__item"
-        :class="{ 'tab__item--active': tab === 1 }"
-        @click="tab = 1"
+        :class="{ 'tab__item--active': data.tab === 1 }"
+        @click="data.tab = 1"
       >
         Login
       </li>
       <li
         class="tab__item"
-        :class="{ 'tab__item--active': tab === 2 }"
-        @click="tab = 2"
+        :class="{ 'tab__item--active': data.tab === 2 }"
+        @click="data.tab = 2"
       >
         Register
       </li>
     </ul>
-    <div class="panel" v-show="tab === 1">
-      <p class="mt-2 text-danger">{{ getUserMessage }}</p>
+    <div class="panel" v-show="data.tab === 1">
+      <p class="mt-2 text-danger">{{ data.getUserMessage }}</p>
       <form class="form" @submit.prevent="login">
         <div v-if="loginErrors" class="errors">
           <ul v-if="loginErrors.email">
@@ -46,7 +46,7 @@
         </div>
       </form>
     </div>
-    <div class="panel" v-show="tab === 2">
+    <div class="panel" v-show="data.tab === 2">
       <form class="form" @submit.prevent="register">
         <div v-if="registerErrors" class="errors">
           <ul v-if="registerErrors.name">
@@ -96,62 +96,72 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-export default {
-  data() {
-    return {
+import { defineComponent, reactive, computed } from "vue";
+import {useStore} from "vuex";
+import { useRouter } from 'vue-router'
+
+export default defineComponent({
+  setup() {
+    const store = useStore()
+    const router = useRouter()
+
+    const data = reactive({
       tab: 1,
       error: false,
       getUserMessage: "",
-      loginForm: {
-        email: "",
-        password: "",
-      },
-      registerForm: {
-        name: "",
-        email: "",
-        password: "",
-        password_confirmation: "",
-      },
-    };
-  },
-  created() {
-    this.clearError();
-  },
-  computed: {
-    // apiStatus() {
-    //   return this.$store.state.auth.apiStatus;
-    // },
-    // loginErrors() {
-    //   return this.$store.state.auth.loginErrorMessages;
-    // },
-    ...mapState({
-      apiStatus: (state) => state.auth.apiStatus,
-      loginErrors: (state) => state.auth.loginErrorMessages,
-      registerErrors: (state) => state.auth.registerErrorMessages,
-    }),
-  },
-  methods: {
-    async login() {
-      // authストアのloginアクションを呼び出す
-      await this.$store.dispatch("auth/login", this.loginForm);
-      if (this.apiStatus) {
-        this.$router.push("/about");
-      }
-    },
-    async register() {
-      // authストアのregisterアクションを呼び出す
-      await this.$store.dispatch("auth/register", this.registerForm);
+    })
+    const loginForm = reactive({
+      email: "",
+      password: "",
+    })
+    const registerForm = reactive({
+      name: "",
+      email: "",
+      password: "",
+      password_confirmation: "",
+    })
 
-      if (this.apiStatus) {
-        // トップページに移動する
-        this.$router.push("/");
+    const apiStatus = computed(() => store.state.auth.apiStatus)
+    const loginErrors = computed(() => store.state.auth.loginErrorMessages)
+    const registerErrors = computed(() => store.state.auth.registerErrorMessages)
+
+    const login = async () => {
+      try {
+        await store.dispatch("auth/login", loginForm);
+        if (apiStatus) {
+          router.push("/about");
+        }
+      } catch (err) {
+        console.log('Failure');
       }
-    },
-    clearError() {
-      this.$store.commit("auth/setLoginErrorMessages", null);
-      this.$store.commit("auth/setRegisterErrorMessages", null);
-    },
+    }
+    const register = async () => {
+      try {
+        await store.dispatch("auth/register", registerForm);
+        if (apiStatus) {
+          router.push("/");
+        }
+      } catch (err) {
+        console.log('Failure');
+      }
+    }
+
+    const clearError = () => {
+      store.commit("auth/setLoginErrorMessages", null);
+      store.commit("auth/setRegisterErrorMessages", null);
+    }
+    clearError()
+
+    return {
+      data,
+      loginForm,
+      registerForm,
+      apiStatus,
+      loginErrors,
+      registerErrors,
+      login,
+      register,
+    }
   },
-};
+});
 </script>

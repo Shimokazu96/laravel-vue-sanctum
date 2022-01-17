@@ -9,18 +9,31 @@
   </footer>
 </template>
 <script>
-export default {
-  methods: {
-    async logout() {
-      await this.$store.dispatch("auth/logout");
+import { defineComponent, computed } from "vue";
 
-      this.$router.push("/login");
-    },
-  },
-  computed: {
-    isLogin() {
-      return this.$store.getters["auth/check"];
-    },
-  },
-};
+import {useStore} from "vuex";
+import { useRouter } from 'vue-router'
+
+export default defineComponent({
+  setup() {
+    const store = useStore()
+    const router = useRouter()
+
+    const isLogin = computed(() => store.getters["auth/check"])
+
+    const logout = async () => {
+      try {
+        await store.dispatch("auth/logout");
+          router.push("/login");
+      } catch (err) {
+        console.log('Failure');
+      }
+    }
+
+    return {
+      isLogin,
+      logout
+    }
+  }
+});
 </script>

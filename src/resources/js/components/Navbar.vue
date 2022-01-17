@@ -22,14 +22,21 @@
   </nav>
 </template>
 <script>
-export default {
-  computed: {
-    isLogin () {
-      return this.$store.getters['auth/check']
-    },
-    username () {
-      return this.$store.getters['auth/username']
+import { defineComponent, computed } from "vue";
+
+import {useStore} from "vuex";
+
+export default defineComponent({
+  setup() {
+    const store = useStore()
+
+    const isLogin = computed(() => store.getters["auth/check"])
+    const username = computed(() => store.getters["auth/username"])
+
+    return {
+      isLogin,
+      username
     }
   }
-}
+});
 </script>
