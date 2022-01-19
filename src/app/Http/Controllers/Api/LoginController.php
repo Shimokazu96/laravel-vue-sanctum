@@ -8,14 +8,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller
 {
-
-    use AuthenticatesUsers;
 
     public function login(LoginRequest $request): JsonResponse
     {
@@ -33,10 +30,10 @@ class LoginController extends Controller
         }
     }
 
-    protected function authenticated(Request $request, $user)
-    {
-        return $user;
-    }
+    // protected function authenticated(Request $request, $user)
+    // {
+    //     return $user;
+    // }
 
     public function logout(Request $request)
     {

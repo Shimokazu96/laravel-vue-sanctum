@@ -139,7 +139,7 @@ export default defineComponent({
       try {
         await store.dispatch("auth/register", registerForm);
         if (apiStatus) {
-          router.push("/");
+          router.push("/about");
         }
       } catch (err) {
         console.log('Failure');
