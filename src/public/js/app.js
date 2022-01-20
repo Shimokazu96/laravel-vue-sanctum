@@ -22923,7 +22923,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               case 3:
                 if (apiStatus) {
-                  router.push("/");
+                  router.push("/about");
                 }
 
                 _context2.next = 9;
@@ -23457,16 +23457,13 @@ var buildApp = /*#__PURE__*/function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.next = 2;
-            return _store__WEBPACK_IMPORTED_MODULE_4__["default"].dispatch("auth/currentUser");
-
-          case 2:
+            // await store.dispatch("auth/currentUser");
             app = (0,vue__WEBPACK_IMPORTED_MODULE_1__.createApp)(_App_vue__WEBPACK_IMPORTED_MODULE_2__["default"]);
             app.use(_router__WEBPACK_IMPORTED_MODULE_3__["default"]);
             app.use(_store__WEBPACK_IMPORTED_MODULE_4__["default"]);
             app.mount("#app");
 
-          case 6:
+          case 4:
           case "end":
             return _context.stop();
         }
@@ -23497,10 +23494,8 @@ buildApp(); // new Vue({
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./util */ "./resources/js/util.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
@@ -23509,14 +23504,8 @@ try {
 } catch (e) {} // window.axios=require('axios');
 
 
-window.axios = (axios__WEBPACK_IMPORTED_MODULE_1___default()); // リクエストを送るときに実行する処理
-
-window.axios.interceptors.request.use(function (config) {
-  // クッキーからトークンを取り出してヘッダーに添付する
-  config.headers["X-XSRF-TOKEN"] = (0,_util__WEBPACK_IMPORTED_MODULE_0__.getCookieValue)("XSRF-TOKEN");
-  return config;
-}); // レスポンスを受けた後の処理を上書きする
-// これを書くことでstore/auth.tsのユーザー登録、ログイン、ログアウト、ログインユーザー取得で毎回
+window.axios = (axios__WEBPACK_IMPORTED_MODULE_0___default()); // レスポンスを受けた後の処理を上書きする
+// これを書くことでstore/auth.jsのユーザー登録、ログイン、ログアウト、ログインユーザー取得で毎回
 // .catch(error => error.response || error)を書かなくて済む
 
 window.axios.interceptors.response.use(function (response) {
@@ -23907,50 +23896,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "CREATED": () => (/* binding */ CREATED),
 /* harmony export */   "INTERNAL_SERVER_ERROR": () => (/* binding */ INTERNAL_SERVER_ERROR),
 /* harmony export */   "UNPROCESSABLE_ENTITY": () => (/* binding */ UNPROCESSABLE_ENTITY),
-/* harmony export */   "UNAUTHORIZED": () => (/* binding */ UNAUTHORIZED),
-/* harmony export */   "getCookieValue": () => (/* binding */ getCookieValue)
+/* harmony export */   "UNAUTHORIZED": () => (/* binding */ UNAUTHORIZED)
 /* harmony export */ });
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
 var OK = 200;
 var CREATED = 201;
 var INTERNAL_SERVER_ERROR = 500;
 var UNPROCESSABLE_ENTITY = 422;
 var UNAUTHORIZED = 419;
-/**
- * クッキーの値を取得する
- * @param {String} searchKey 検索するキー
- * @returns {String} キーに対応する値
- */
-
-function getCookieValue(searchKey) {
-  if (typeof searchKey === "undefined") {
-    return "";
-  }
-
-  var val = "";
-  document.cookie.split(";").forEach(function (cookie) {
-    var _cookie$split = cookie.split("="),
-        _cookie$split2 = _slicedToArray(_cookie$split, 2),
-        key = _cookie$split2[0],
-        value = _cookie$split2[1];
-
-    if (key === searchKey) {
-      return val = value;
-    }
-  });
-  return val;
-}
 
 /***/ }),
 
@@ -52953,7 +52905,7 @@ module.exports = JSON.parse('{"name":"axios","version":"0.21.4","description":"P
 /******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
 /******/ 					installedChunks[chunkId][0]();
 /******/ 				}
-/******/ 				installedChunks[chunkIds[i]] = 0;
+/******/ 				installedChunks[chunkId] = 0;
 /******/ 			}
 /******/ 			return __webpack_require__.O(result);
 /******/ 		}
