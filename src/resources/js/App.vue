@@ -16,8 +16,7 @@
 <script>
 import Navbar from "./components/Navbar.vue";
 import Footer from "./components/Footer.vue";
-import store from "./store";
-import { INTERNAL_SERVER_ERROR } from "./util";
+import { NOT_FOUND, UNAUTHORIZED, INTERNAL_SERVER_ERROR } from "./util";
 
 export default {
   components: {
@@ -25,31 +24,31 @@ export default {
     Footer,
   },
   computed: {
-    // isLogin() {
-    //   if (store.getters["auth/check"]) {
-    //     console.log("ログイン済み");
-    //     return "ログイン済み";
-    //   } else {
-    //     console.log("ログインしてません");
-    //     return "ログインしてません";
-    //   }
-    // },
     errorCode() {
       return this.$store.state.error.code;
     },
   },
   watch: {
     errorCode: {
-      handler (val) {
+      async handler (val) {
         if (val === INTERNAL_SERVER_ERROR) {
-          this.$router.push('/500')
+          this.$router.push("/500");
+        } else if (val === UNAUTHORIZED) {
+          // トークンをリフレッシュ
+          await axios.get("/api/refresh-token");
+          // ストアのuserをクリア
+          this.$store.commit("auth/setUser", null);
+          // ログイン画面へ
+          this.$router.push("/login");
+        } else if (val === NOT_FOUND) {
+          this.$router.push("/not-found");
         }
       },
-      immediate: true
+      immediate: true,
     },
-    $route () {
-      this.$store.commit('error/setCode', null)
-    }
-  }
+    $route() {
+      this.$store.commit("error/setCode", null);
+    },
+  },
 };
 </script>

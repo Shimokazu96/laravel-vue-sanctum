@@ -97,7 +97,7 @@
 
 <script>
 import { defineComponent, reactive, computed } from "vue";
-import {useStore} from "vuex";
+import { useStore } from "vuex";
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
@@ -121,15 +121,15 @@ export default defineComponent({
       password_confirmation: "",
     })
 
-    const apiStatus = computed(() => store.state.auth.apiStatus)
     const loginErrors = computed(() => store.state.auth.loginErrorMessages)
     const registerErrors = computed(() => store.state.auth.registerErrorMessages)
+    const apiStatus = computed(() => store.state.auth.apiStatus)
 
     const login = async () => {
       try {
         await store.dispatch("auth/login", loginForm);
-        if (apiStatus) {
-          router.push("/about");
+        if (apiStatus.value) {
+          router.push("/user");
         }
       } catch (err) {
         console.log('Failure');
@@ -138,8 +138,8 @@ export default defineComponent({
     const register = async () => {
       try {
         await store.dispatch("auth/register", registerForm);
-        if (apiStatus) {
-          router.push("/about");
+        if (apiStatus.value) {
+          router.push("/user");
         }
       } catch (err) {
         console.log('Failure');
@@ -156,7 +156,6 @@ export default defineComponent({
       data,
       loginForm,
       registerForm,
-      apiStatus,
       loginErrors,
       registerErrors,
       login,

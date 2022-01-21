@@ -14,7 +14,7 @@ export default {
   },
   mounted() {
     axios
-      .get("/api/about")
+      .get("/api/user")
       .then((response) => {
         console.log('ログイン済み');
         this.user = response.data;

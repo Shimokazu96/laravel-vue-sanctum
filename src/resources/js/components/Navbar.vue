@@ -4,15 +4,18 @@
       Laravel
     </RouterLink>
     <div class="navbar__menu">
-      <div v-if="isLogin" class="navbar__item">
+      <!-- <div v-if="isLogin" class="navbar__item">
         <button class="button">
           <i class="icon ion-md-add"></i>
           Submit a photo
         </button>
-      </div>
-      <span v-if="isLogin" class="navbar__item">
+      </div> -->
+      <RouterLink v-if="isLogin" class="navbar__item" to="/user">
+          {{ username }}
+        </RouterLink>
+      <!-- <span v-if="isLogin" class="navbar__item">
         {{ username }}
-      </span>
+      </span> -->
       <div v-else class="navbar__item">
         <RouterLink class="button button--link" to="/login">
           Login / Register
@@ -24,7 +27,7 @@
 <script>
 import { defineComponent, computed } from "vue";
 
-import {useStore} from "vuex";
+import { useStore } from "vuex";
 
 export default defineComponent({
   setup() {
