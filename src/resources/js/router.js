@@ -3,9 +3,10 @@ import { createRouter, createWebHistory } from "vue-router";
 // ページコンポーネントをインポートする
 import PhotoList from "./pages/PhotoList.vue";
 import Login from "./pages/Login.vue";
-import About from "./pages/About.vue";
+import User from "./pages/User.vue";
 import store from "./store";
 import SystemError from "./pages/errors/System.vue";
+import NotFound from "./pages/errors/NotFound.vue";
 
 
 const routes = [
@@ -27,14 +28,18 @@ const routes = [
     name: "login",
   },
   {
-    path: "/about",
-    component: About,
-    name: "about",
+    path: "/user",
+    component: User,
+    name: "user",
     meta: { requiresAuth: true },
   },
   {
     path: "/500",
     component: SystemError,
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    component: NotFound,
   },
 ];
 

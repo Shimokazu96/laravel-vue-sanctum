@@ -18,20 +18,24 @@ use Illuminate\Support\Facades\Auth;
 */
 
 Route::group(['middleware' => 'auth:sanctum'], function() {
-    Route::get('/about', function (Request $request) {
+    Route::get('/user',function (Request $request) {
         return Auth::user();
+    })->name('user');
+    Route::get('/', function (Request $request) {
+        return "hello";
     });
 });
-Route::get('/user',function (Request $request) {
-    return Auth::user();
-})->name('user');
 
-Route::get('/', function (Request $request) {
-    return "hello";
-});
 
 // 会員登録
 Route::post('/register', [RegisterController::class, 'register']);
 // ログイン
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
+
+// トークンリフレッシュ
+Route::get('/reflesh-token', function (Illuminate\Http\Request $request) {
+    $request->session()->regenerateToken();
+
+    return response()->json();
+});

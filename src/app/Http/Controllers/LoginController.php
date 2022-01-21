@@ -29,11 +29,6 @@ class LoginController extends Controller
         }
     }
 
-    // protected function authenticated(Request $request, $user)
-    // {
-    //     return $user;
-    // }
-
     public function logout(Request $request)
     {
         Auth::logout();
