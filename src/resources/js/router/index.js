@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // ページコンポーネントをインポートする
-import PhotoList from "./pages/PhotoList.vue";
-import Login from "./pages/Login.vue";
-import User from "./pages/User.vue";
-import store from "./store";
-import SystemError from "./pages/errors/System.vue";
-import NotFound from "./pages/errors/NotFound.vue";
+import PhotoList from "../pages/PhotoList.vue";
+import Login from "../pages/Login.vue";
+import User from "../pages/User.vue";
+import store from "../store";
+import SystemError from "../pages/errors/System.vue";
+import NotFound from "../pages/errors/NotFound.vue";
 
 
 const routes = [
