@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-Route::group(['middleware' => 'auth:sanctum'], function() {
+
+Route::group(['middleware' =>'auth:sanctum','verified'], function() {
     Route::get('/user',function (Request $request) {
         return Auth::user();
     })->name('user');

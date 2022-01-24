@@ -1,4 +1,5 @@
 import { OK, CREATED, NO_CONTENT, UNPROCESSABLE_ENTITY } from "../util";
+import router from "../router";
 
 const state = {
   user: null,
@@ -33,9 +34,10 @@ const actions = {
     context.commit("setApiStatus", null);
     const response = await axios.post("/api/register", data);
 
-    if (response.status === CREATED) {
-      context.commit("setApiStatus", true);
-      context.commit("setUser", response.data);
+    if(response.status===CREATED) {
+      router.push("/email/verify");
+      // context.commit("setApiStatus", true);
+      // context.commit("setUser", response.data);
       return false;
     }
 

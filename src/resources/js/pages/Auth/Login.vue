@@ -138,9 +138,9 @@ export default defineComponent({
     const register = async () => {
       try {
         await store.dispatch("auth/register", registerForm);
-        if (apiStatus.value) {
-          router.push("/user");
-        }
+        // if (apiStatus.value) {
+        //   router.push("/email/verify");
+        // }
       } catch (err) {
         console.log('Failure');
       }
