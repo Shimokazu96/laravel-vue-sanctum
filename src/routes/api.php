@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
+// use App\Http\Controllers\RegisterController;
+// use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -28,10 +28,10 @@ Route::group(['middleware' => 'auth:sanctum'], function() {
 
 
 // 会員登録
-Route::post('/register', [RegisterController::class, 'register']);
+// Route::post('/register', [RegisterController::class, 'register']);
 // ログイン
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout']);
+// Route::post('/login', [LoginController::class, 'login']);
+// Route::post('/logout', [LoginController::class, 'logout']);
 
 // トークンリフレッシュ
 Route::get('/reflesh-token', function (Illuminate\Http\Request $request) {

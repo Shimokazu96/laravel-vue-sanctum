@@ -1,4 +1,4 @@
-import { OK, CREATED, UNPROCESSABLE_ENTITY } from "../util";
+import { OK, CREATED, NO_CONTENT, UNPROCESSABLE_ENTITY } from "../util";
 
 const state = {
   user: null,
@@ -74,7 +74,7 @@ const actions = {
     context.commit("setApiStatus", null);
     const response = await axios.post("/api/logout");
 
-    if (response.status === OK) {
+    if (response.status === NO_CONTENT) {
       context.commit("setApiStatus", true);
       context.commit("setUser", null);
       return false;
