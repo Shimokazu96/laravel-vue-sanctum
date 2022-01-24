@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 
 // ページコンポーネントをインポートする
 import PhotoList from "../pages/PhotoList.vue";
-import Login from "../pages/Login.vue";
+import Login from "../pages/Auth/Login.vue";
+import VerifyEmail from "../pages/Auth/VerifyEmail.vue";
 import User from "../pages/User.vue";
 import store from "../store";
 import SystemError from "../pages/errors/System.vue";
@@ -26,6 +27,18 @@ const routes = [
     },
     component: Login,
     name: "login",
+  },
+  {
+    path: "/email/verify",
+    beforeEnter(to, from, next) {
+      if (store.getters["auth/check"]) {
+        next("/");
+      } else {
+        next();
+      }
+    },
+    component: VerifyEmail,
+    name: "VerifyEmail",
   },
   {
     path: "/user",
