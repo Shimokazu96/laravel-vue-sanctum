@@ -1,22 +1,25 @@
 <template>
-  <div class="container--small">
-    <div class="panel">
-      <div class="mb-4 text-sm text-gray-600">
-        <p>
-          認証メールを送信しました。届いたメールをご確認の上、記載のリンクから登録を完了させてください。
-        </p>
-        <p>
-          ※メールが届かない場合は、入力したアドレスに間違いがあるか、あるいは迷惑メールフォルダに入っている可能性がありますのでご確認ください。
-        </p>
-      </div>
-      <p>認証メールを再送する場合はこちらをクリックしてください。</p>
-      <form @submit.prevent="submit">
-        <div class="mt-4 flex items-center justify-between">
-          <button type="submit" class="button button--inverse">
+  <div class="bg-gray-100 flex-auto">
+    <div class="flex justify-center mt-16">
+      <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+        <div>
+          <h2 class="text-gray-800 text-2xl font-semibold">
+            認証メールを送信しました。
+          </h2>
+          <p class="mt-2 text-gray-600">
+            届いたメールをご確認の上、記載のリンクから登録を完了させてください。<br>
+            認証メールを再送する場合はこちらをクリックしてください。
+          </p>
+        </div>
+        <form class="flex justify-center mt-4" @submit.prevent="submit">
+          <button
+            type="submit"
+            class="text-xl w-3/5 bg-green-800 text-white py-2 rounded"
+          >
             メールを再送
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -26,21 +29,20 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   //   data() {},
-    methods: {
-      submit() {
-        axios.post('/api/email/verification-notification')
-                    .then((res) => {
-                        if( res.data.status_code == 200 ) {
-                            console.log(res);
-                        }
-                        this.getUserMessage = 'ログインに失敗しました。'
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                        this.getUserMessage = 'ログインに失敗しました。'
-                    })
-      },
+  methods: {
+    submit() {
+      axios
+        .post("/api/email/verification-notification")
+        .then((res) => {
+          if (res.data.status_code == 200) {
+            console.log(res);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
+  },
   //   computed: {
   //     verificationLinkSent() {
   //       return this.status === "verification-link-sent";

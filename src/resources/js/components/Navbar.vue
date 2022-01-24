@@ -1,45 +1,68 @@
 <template>
-  <nav class="navbar">
-    <RouterLink class="navbar__brand" to="/">
+  <header class="flex justify-between p-4 border-b items-center">
+    <RouterLink class="font-semibold text-xl leading-tight" to="/">
       Laravel
     </RouterLink>
-    <div class="navbar__menu">
-      <!-- <div v-if="isLogin" class="navbar__item">
-        <button class="button">
-          <i class="icon ion-md-add"></i>
-          Submit a photo
-        </button>
-      </div> -->
-      <RouterLink v-if="isLogin" class="navbar__item" to="/user">
-          {{ username }}
-        </RouterLink>
-      <!-- <span v-if="isLogin" class="navbar__item">
+    <div>
+      <RouterLink
+        v-if="isLogin"
+        class="font-semibold text-xl leading-tight"
+        to="/user"
+      >
         {{ username }}
-      </span> -->
-      <div v-else class="navbar__item">
-        <RouterLink class="button button--link" to="/login">
-          Login / Register
-        </RouterLink>
-      </div>
+      </RouterLink>
+      <button
+        v-if="isLogin"
+        class="py-1 px-4 border-2 border-green-800 rounded"
+        @click="logout"
+      >
+        Logout
+      </button>
     </div>
-  </nav>
+    <div>
+      <button
+        v-if="!isLogin"
+        class="py-1 px-4 border-2 border-green-800 rounded"
+      >
+        <RouterLink to="/login">サインイン</RouterLink>
+      </button>
+      <button
+        v-if="!isLogin"
+        class="ml-3 py-1 px-4 border-2 border-green-800 rounded"
+      >
+        <RouterLink to="/register">登録する</RouterLink>
+      </button>
+    </div>
+  </header>
 </template>
 <script>
 import { defineComponent, computed } from "vue";
 
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
-    const store = useStore()
+    const store = useStore();
+    const router = useRouter();
 
-    const isLogin = computed(() => store.getters["auth/check"])
-    const username = computed(() => store.getters["auth/username"])
+    const isLogin = computed(() => store.getters["auth/check"]);
+    const username = computed(() => store.getters["auth/username"]);
+
+    const logout = async () => {
+      try {
+        await store.dispatch("auth/logout");
+        router.push("/login");
+      } catch (err) {
+        console.log("Failure");
+      }
+    };
 
     return {
       isLogin,
-      username
-    }
-  }
+      username,
+      logout,
+    };
+  },
 });
 </script>

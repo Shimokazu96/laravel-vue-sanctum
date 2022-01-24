@@ -1,14 +1,8 @@
 <template>
-  <div>
-    <header>
-      <Navbar />
-    </header>
-    <main>
-      <!-- <p>{{ isLogin }}</p> -->
-      <div class="container">
-        <RouterView />
-      </div>
-    </main>
+  <div class="flex flex-col h-screen">
+    <Navbar />
+    <!-- <p>{{ isLogin }}</p> -->
+    <RouterView />
     <Footer />
   </div>
 </template>
@@ -59,7 +53,7 @@ export default {
   },
   watch: {
     errorCode: {
-      async handler (val) {
+      async handler(val) {
         if (val === INTERNAL_SERVER_ERROR) {
           this.$router.push("/500");
         } else if (val === UNAUTHORIZED) {
