@@ -1,11 +1,8 @@
 <template>
-  <footer class="footer">
-    <button v-if="isLogin" class="button button--link" @click="logout">
-      Logout
-    </button>
-    <RouterLink v-else class="button button--link" to="/login">
-      Login / Register
-    </RouterLink>
+  <footer class="w-full bg-grey-lighter py-8">
+    <div class="container mx-auto text-center px-8">
+        <p class="text-grey-dark mb-2 text-sm">This is a product of <span class="font-bold">SaunaBouya</span></p>
+    </div>
   </footer>
 </template>
 <script>

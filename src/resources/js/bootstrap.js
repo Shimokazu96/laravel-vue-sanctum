@@ -2,10 +2,6 @@ import Axios, { AxiosStatic } from "axios";
 
 window._ = require("lodash");
 
-try {
-  require("bootstrap");
-} catch (e) {}
-
 // window.axios=require('axios');
 window.axios = Axios;
 

@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 // ページコンポーネントをインポートする
 import PhotoList from "../pages/PhotoList.vue";
 import Login from "../pages/Auth/Login.vue";
+import Register from "../pages/Auth/Register.vue";
 import VerifyEmail from "../pages/Auth/VerifyEmail.vue";
 import User from "../pages/User.vue";
 import store from "../store";
@@ -15,6 +16,18 @@ const routes = [
     path: "/",
     component: PhotoList,
     name: "PhotoList",
+  },
+  {
+    path: "/register",
+    beforeEnter(to, from, next) {
+      if (store.getters["auth/check"]) {
+        next("/");
+      } else {
+        next();
+      }
+    },
+    component: Register,
+    name: "Register",
   },
   {
     path: "/login",
