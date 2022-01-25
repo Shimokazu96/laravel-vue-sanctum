@@ -40,6 +40,9 @@
               サインイン
             </button>
           </form>
+          <RouterLink class="block mt-4 mt-2 text-blue-500" to="/forgot-password">
+            パスワードを忘れた場合
+          </RouterLink>
         </div>
       </div>
     </div>
