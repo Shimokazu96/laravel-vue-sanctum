@@ -2,15 +2,14 @@ import { createRouter, createWebHistory } from "vue-router";
 
 // ページコンポーネントをインポートする
 import PhotoList from "../pages/PhotoList.vue";
-import Login from "../pages/Auth/Login.vue";
-import Register from "../pages/Auth/Register.vue";
-import VerifyEmail from "../pages/Auth/VerifyEmail.vue";
-import ForgetPassword from "../pages/Auth/ForgetPassword.vue";
+import Login from "../pages/auth/Login.vue";
+import Register from "../pages/auth/Register.vue";
+import VerifyEmail from "../pages/auth/VerifyEmail.vue";
+import ForgetPassword from "../pages/auth/ForgetPassword.vue";
 import User from "../pages/User.vue";
 import store from "../store";
 import SystemError from "../pages/errors/System.vue";
 import NotFound from "../pages/errors/NotFound.vue";
-
 
 const routes = [
   {
@@ -59,6 +58,10 @@ const routes = [
     beforeEnter(to, from, next) {
       if (store.getters["auth/verified"]) {
         next("/");
+      } else if (!store.getters["auth/check"]) {
+        next({
+          path: "/login",
+        });
       } else {
         next();
       }

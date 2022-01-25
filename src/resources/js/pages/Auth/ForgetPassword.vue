@@ -5,7 +5,7 @@
         <div class="my-12 text-center">
           <div
             v-if="getMessage"
-            class="bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700"
+            class="bg-green-100 rounded-lg p-4 m-4 text-sm text-green-700"
             role="alert"
           >
             <div>
