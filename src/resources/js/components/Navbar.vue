@@ -13,25 +13,23 @@
       </RouterLink>
       <button
         v-if="isLogin"
-        class="py-1 px-4 border-2 border-green-800 rounded"
+        class="ml-3 py-1 px-4 border-2 border-green-800 rounded"
         @click="logout"
       >
         Logout
       </button>
-    </div>
-    <div>
-      <button
+      <RouterLink
         v-if="!isLogin"
         class="py-1 px-4 border-2 border-green-800 rounded"
+        to="/login"
+        >サインイン</RouterLink
       >
-        <RouterLink to="/login">サインイン</RouterLink>
-      </button>
-      <button
+      <RouterLink
         v-if="!isLogin"
         class="ml-3 py-1 px-4 border-2 border-green-800 rounded"
+        to="/register"
+        >登録する</RouterLink
       >
-        <RouterLink to="/register">登録する</RouterLink>
-      </button>
     </div>
   </header>
 </template>
