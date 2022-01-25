@@ -2,9 +2,15 @@
   <div class="bg-gray-100 flex-auto">
     <div class="flex justify-center mt-16">
       <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
-        <h2 v-if="getMessage" class="text-gray-800 text-xl font-semibold">
-          {{ getMessage }}
-        </h2>
+        <div
+          v-if="getMessage"
+          class="bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700"
+          role="alert"
+        >
+          <div>
+            {{ getMessage }}
+          </div>
+        </div>
         <div>
           <p class="mt-2 text-gray-600">
             届いたメールをご確認の上、記載のリンクから登録を完了させてください。<br />

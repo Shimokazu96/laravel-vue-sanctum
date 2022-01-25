@@ -5,6 +5,7 @@ import PhotoList from "../pages/PhotoList.vue";
 import Login from "../pages/Auth/Login.vue";
 import Register from "../pages/Auth/Register.vue";
 import VerifyEmail from "../pages/Auth/VerifyEmail.vue";
+import ForgetPassword from "../pages/Auth/ForgetPassword.vue";
 import User from "../pages/User.vue";
 import store from "../store";
 import SystemError from "../pages/errors/System.vue";
@@ -40,6 +41,18 @@ const routes = [
     },
     component: Login,
     name: "login",
+  },
+  {
+    path: "/forgot-password",
+    beforeEnter(to, from, next) {
+      if (store.getters["auth/check"]) {
+        next("/");
+      } else {
+        next();
+      }
+    },
+    component: ForgetPassword,
+    name: "ForgetPassword",
   },
   {
     path: "/email/verify",
