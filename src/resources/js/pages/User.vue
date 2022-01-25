@@ -1,7 +1,14 @@
 <template>
-  <div>
-    <p>名前: {{ user.name }}</p>
-    <p>メールアドレス: {{ user.email }}</p>
+  <div class="bg-gray-100 flex-auto">
+    <div class="flex justify-center mt-16">
+      <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+        <div>
+          <h2 class="text-gray-800 text-3xl font-semibold">Design Tools</h2>
+          <p>名前: {{ user.name }}</p>
+          <p>メールアドレス: {{ user.email }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -16,11 +23,11 @@ export default {
     axios
       .get("/api/user")
       .then((response) => {
-        console.log('ログイン済み');
+        console.log("ログイン済み");
         this.user = response.data;
       })
       .catch((error) => {
-        console.log('ログインしてません');
+        console.log("ログインしてません");
         console.log(error);
       });
   },

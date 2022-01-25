@@ -13,12 +13,8 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use App\Http\Responses\LoginResponse;
-use Laravel\Fortify\Contracts\LogoutResponse as LogoutResponseContract;
-use App\Http\Responses\LogoutResponse;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use App\Http\Responses\RegisterResponse;
-use App\Http\Controllers\RegisterController;
-use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -29,10 +25,6 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(
-            RegisteredUserController::class,
-            RegisterController::class
-        );
     }
 
     /**
@@ -58,7 +50,6 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
-        $this->app->singleton(LogoutResponseContract::class, LogoutResponse::class);
         $this->app->singleton(RegisterResponseContract::class, RegisterResponse::class);
     }
 }

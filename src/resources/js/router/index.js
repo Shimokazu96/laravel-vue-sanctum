@@ -44,7 +44,7 @@ const routes = [
   {
     path: "/email/verify",
     beforeEnter(to, from, next) {
-      if (store.getters["auth/check"]) {
+      if (store.getters["auth/verified"]) {
         next("/");
       } else {
         next();
@@ -76,13 +76,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!store.getters["auth/check"]) {
+    if (!store.getters["auth/verified"] && store.getters["auth/check"]) {
+      next({
+        path: "/email/verify",
+      });
+    } else if (!store.getters["auth/check"]) {
       next({
         path: "/login",
-        // query: {
-        //   redirect: to.fullPath,
-        //   message: true,
-        // },
       });
     } else {
       next();

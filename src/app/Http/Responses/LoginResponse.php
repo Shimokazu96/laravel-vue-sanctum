@@ -18,18 +18,8 @@ class LoginResponse implements LoginResponseContract
   public function toResponse($request)
   {
     $user = Auth::user();
-    if ($user->hasVerifiedEmail()) {
-      return $request->wantsJson()
-        ? response()->json($user, 200)
-        : redirect()->intended(Fortify::redirects('login'));
-    }
-
-    $request->session()->invalidate();
-
-    $request->session()->regenerateToken();
-
-    throw ValidationException::withMessages([
-      'email' => ['メール認証が終わっておりません'],
-    ]);
+    return $request->wantsJson()
+      ? response()->json($user, 200)
+      : redirect()->intended(Fortify::redirects('login'));
   }
 }
