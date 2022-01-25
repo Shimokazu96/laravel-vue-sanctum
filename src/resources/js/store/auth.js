@@ -37,8 +37,8 @@ const actions = {
 
     if(response.status===CREATED) {
       router.push("/email/verify");
-      // context.commit("setApiStatus", true);
-      // context.commit("setUser", response.data);
+      context.commit("setApiStatus", true);
+      context.commit("setUser", response.data);
       return false;
     }
 
