@@ -3,6 +3,7 @@
     <div class="flex justify-center mt-16">
       <div class="w-2/5 border bg-white">
         <div class="my-12 text-center">
+          <h2 class="text-3xl mb-2 font-bold">パスワードリセット</h2>
           <div
             v-if="getMessage"
             class="bg-green-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-green-700"
@@ -13,11 +14,16 @@
             </div>
           </div>
           <div v-if="forgotPasswordErrors" class="my-4">
-              <ul v-if="forgotPasswordErrors.email">
-                <li v-for="msg in forgotPasswordErrors.email" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">{{ msg }}</li>
-              </ul>
-            </div>
-          <h2 class="text-3xl mb-2 font-bold">パスワードリセット</h2>
+            <ul v-if="forgotPasswordErrors.email">
+              <li
+                v-for="msg in forgotPasswordErrors.email"
+                :key="msg"
+                class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700"
+              >
+                {{ msg }}
+              </li>
+            </ul>
+          </div>
           <form class="form" @submit.prevent="submit">
             <div class="mb-2">
               <input
@@ -30,7 +36,7 @@
             </div>
             <button
               type="submit"
-              class="text-xl w-3/5 bg-green-800 text-white py-2 rounded"
+              class="text-xl w-3/5 bg-blue-600 text-white py-2 rounded"
             >
               パスワードリセット
             </button>
@@ -53,7 +59,9 @@ export default defineComponent({
     });
     const store = useStore();
     const router = useRouter();
-    const forgotPasswordErrors = computed(() => store.state.auth.forgotPasswordErrorMessages);
+    const forgotPasswordErrors = computed(
+      () => store.state.auth.forgotPasswordErrorMessages
+    );
     const apiStatus = computed(() => store.state.auth.apiStatus);
 
     const closeMessage = () => {
@@ -62,9 +70,9 @@ export default defineComponent({
 
     const submit = async () => {
       try {
-        await store.dispatch("auth/forgotPassword",  emailForm);
+        await store.dispatch("auth/forgotPassword", emailForm);
         if (apiStatus.value) {
-          // router.push("/user");
+          clearError();
           getMessage.value = "メールを送信しました。";
           setTimeout(closeMessage, 6000);
         }
@@ -75,6 +83,11 @@ export default defineComponent({
         setTimeout(closeMessage, 6000);
       }
     };
+
+    const clearError = () => {
+      store.commit("auth/setForgotPasswordErrorMessages", null);
+    };
+    clearError();
 
     return {
       getMessage,

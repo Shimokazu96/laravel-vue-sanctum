@@ -15,7 +15,7 @@
                 </li>
               </ul>
               <ul v-if="registerErrors.password">
-                <li v-for="msg in registerErrors.password" :key="msg">
+                <li v-for="msg in registerErrors.password" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">
                   {{ msg }}
                 </li>
               </ul>
@@ -58,7 +58,7 @@
             </div>
             <button
               type="submit"
-              class="text-xl w-3/5 bg-green-800 text-white py-2 rounded"
+              class="text-xl w-3/5 bg-blue-600 text-white py-2 rounded"
             >
               ユーザの登録
             </button>
