@@ -5,7 +5,7 @@ import PhotoList from "../pages/PhotoList.vue";
 import Login from "../pages/auth/Login.vue";
 import Register from "../pages/auth/Register.vue";
 import VerifyEmail from "../pages/auth/VerifyEmail.vue";
-import ForgetPassword from "../pages/auth/ForgetPassword.vue";
+import ForgotPassword from "../pages/auth/ForgotPassword.vue";
 import User from "../pages/User.vue";
 import store from "../store";
 import SystemError from "../pages/errors/System.vue";
@@ -50,8 +50,8 @@ const routes = [
         next();
       }
     },
-    component: ForgetPassword,
-    name: "ForgetPassword",
+    component: ForgotPassword,
+    name: "ForgotPassword",
   },
   {
     path: "/email/verify",

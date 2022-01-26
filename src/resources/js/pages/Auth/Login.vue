@@ -5,12 +5,12 @@
         <div class="my-12 text-center">
           <h2 class="text-3xl mb-2 font-bold">サインイン</h2>
           <form class="form" @submit.prevent="login">
-            <div v-if="loginErrors" class="my-4 text-red-500">
+            <div v-if="loginErrors" class="my-4">
               <ul v-if="loginErrors.email">
-                <li v-for="msg in loginErrors.email" :key="msg">{{ msg }}</li>
+                <li v-for="msg in loginErrors.email" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">{{ msg }}</li>
               </ul>
               <ul v-if="loginErrors.password">
-                <li v-for="msg in loginErrors.password" :key="msg">
+                <li v-for="msg in loginErrors.password" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">
                   {{ msg }}
                 </li>
               </ul>

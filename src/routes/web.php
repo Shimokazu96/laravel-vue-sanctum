@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\ResetPasswordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,4 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
   return view('index');
 })->name('login');
+
+Route::get('/reset-password/{token}', ResetPasswordController::class)
+  ->name('password.reset');
+
 Route::get('/{any?}', fn () => view('index'))->where('any', '.+');
