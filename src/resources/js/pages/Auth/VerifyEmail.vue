@@ -4,7 +4,7 @@
       <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
         <div
           v-if="getMessage"
-          class="bg-green-100 rounded-lg p-4 mb-4 text-sm text-green-700"
+          class="bg-green-100 rounded-lg p-4 text-sm text-green-700"
           role="alert"
         >
           <div>

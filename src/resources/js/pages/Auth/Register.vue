@@ -7,10 +7,10 @@
           <form @submit.prevent="register">
             <div v-if="registerErrors" class="my-4 text-red-500">
               <ul v-if="registerErrors.name">
-                <li v-for="msg in registerErrors.name" :key="msg">{{ msg }}</li>
+                <li v-for="msg in registerErrors.name" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">{{ msg }}</li>
               </ul>
               <ul v-if="registerErrors.email">
-                <li v-for="msg in registerErrors.email" :key="msg">
+                <li v-for="msg in registerErrors.email" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">
                   {{ msg }}
                 </li>
               </ul>
@@ -94,9 +94,9 @@ export default defineComponent({
     const register = async () => {
       try {
         await store.dispatch("auth/register", registerForm);
-        // if (apiStatus.value) {
-        //   router.push("/email/verify");
-        // }
+        if (apiStatus.value) {
+          router.push("/email/verify");
+        }
       } catch (err) {
         console.log("Failure");
       }

@@ -6,6 +6,7 @@ const state = {
   apiStatus: null,
   loginErrorMessages: null,
   registerErrorMessages: null,
+  forgotPasswordErrorMessages: null,
 };
 
 const getters = {
@@ -27,6 +28,9 @@ const mutations = {
   setRegisterErrorMessages(state, messages) {
     state.registerErrorMessages = messages;
   },
+  setForgotPasswordErrorMessages(state, messages) {
+    state.forgotPasswordErrorMessages = messages;
+  },
 };
 
 const actions = {
@@ -35,8 +39,7 @@ const actions = {
     context.commit("setApiStatus", null);
     const response = await axios.post("/api/register", data);
 
-    if(response.status===CREATED) {
-      router.push("/email/verify");
+    if (response.status === CREATED) {
       context.commit("setApiStatus", true);
       context.commit("setUser", response.data);
       return false;
@@ -101,6 +104,27 @@ const actions = {
 
     context.commit("setApiStatus", false);
     context.commit("error/setCode", response.status, { root: true });
+  },
+
+  // パスワードリセット
+  async forgotPassword(context, data) {
+    context.commit("setApiStatus", null);
+    // axios.get("/sanctum/csrf-cookie", { withCredentials: true });
+
+    const response = await axios.post("/api/forgot-password", data);
+    console.log(data);
+    console.log(response);
+    if (response.status === OK) {
+      context.commit("setApiStatus", true);
+      return false;
+    }
+
+    context.commit("setApiStatus", false);
+    if (response.status === UNPROCESSABLE_ENTITY) {
+      context.commit("setForgotPasswordErrorMessages", response.data.errors);
+    } else {
+      context.commit("error/setCode", response.status, { root: true });
+    }
   },
 };
 

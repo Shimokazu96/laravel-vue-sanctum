@@ -5,13 +5,18 @@
         <div class="my-12 text-center">
           <div
             v-if="getMessage"
-            class="bg-green-100 rounded-lg p-4 m-4 text-sm text-green-700"
+            class="bg-green-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-green-700"
             role="alert"
           >
             <div>
               {{ getMessage }}
             </div>
           </div>
+          <div v-if="forgotPasswordErrors" class="my-4">
+              <ul v-if="forgotPasswordErrors.email">
+                <li v-for="msg in forgotPasswordErrors.email" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">{{ msg }}</li>
+              </ul>
+            </div>
           <h2 class="text-3xl mb-2 font-bold">パスワードリセット</h2>
           <form class="form" @submit.prevent="submit">
             <div class="mb-2">
@@ -20,7 +25,7 @@
                 placeholder="you@example.com"
                 class="text-xl w-3/5 p-3 border rounded"
                 id="email"
-                v-model="email"
+                v-model="emailForm.email"
               />
             </div>
             <button
@@ -36,38 +41,45 @@
   </div>
 </template>
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, computed, ref, reactive } from "vue";
+import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
     const getMessage = ref("");
-    const email = ref("");
+    const emailForm = reactive({
+      email: "",
+    });
+    const store = useStore();
+    const router = useRouter();
+    const forgotPasswordErrors = computed(() => store.state.auth.forgotPasswordErrorMessages);
+    const apiStatus = computed(() => store.state.auth.apiStatus);
 
     const closeMessage = () => {
       getMessage.value = "";
     };
+
     const submit = async () => {
       try {
-        await axios
-          .post("/api/forgot-password", email.value)
-          .then((res) => {
-            console.log(res);
-            getMessage.value = "メールを送信しました。";
-            setTimeout(closeMessage, 6000);
-          })
-          .catch((err) => {
-            console.log(err);
-            getMessage.value = "メールを送信に失敗しました。";
-            setTimeout(closeMessage, 6000);
-          });
+        await store.dispatch("auth/forgotPassword",  emailForm);
+        if (apiStatus.value) {
+          // router.push("/user");
+          getMessage.value = "メールを送信しました。";
+          setTimeout(closeMessage, 6000);
+        }
       } catch (err) {
         console.log("Failure");
+        console.log(err);
+        getMessage.value = "メールを送信に失敗しました。";
+        setTimeout(closeMessage, 6000);
       }
     };
 
     return {
       getMessage,
-      email,
+      forgotPasswordErrors,
+      emailForm,
       submit,
     };
   },
