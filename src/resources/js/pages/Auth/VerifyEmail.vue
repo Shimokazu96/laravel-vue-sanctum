@@ -20,7 +20,7 @@
         <form class="flex justify-center mt-4" @submit.prevent="submit">
           <button
             type="submit"
-            class="text-xl w-3/5 bg-green-800 text-white py-2 rounded"
+            class="text-xl w-3/5 bg-blue-600 text-white py-2 rounded"
           >
             メールを再送
           </button>

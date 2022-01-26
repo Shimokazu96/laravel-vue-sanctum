@@ -112,7 +112,6 @@ const actions = {
     // axios.get("/sanctum/csrf-cookie", { withCredentials: true });
 
     const response = await axios.post("/api/forgot-password", data);
-    console.log(data);
     console.log(response);
     if (response.status === OK) {
       context.commit("setApiStatus", true);
