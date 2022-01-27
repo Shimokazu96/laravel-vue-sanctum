@@ -1,5 +1,4 @@
 import { OK, CREATED, NO_CONTENT, UNPROCESSABLE_ENTITY } from "../util";
-import router from "../router";
 
 const state = {
   user: null,
@@ -106,7 +105,7 @@ const actions = {
     context.commit("error/setCode", response.status, { root: true });
   },
 
-  // パスワードリセット
+  // パスワードリセットメール
   async forgotPassword(context, data) {
     context.commit("setApiStatus", null);
     // axios.get("/sanctum/csrf-cookie", { withCredentials: true });
@@ -121,6 +120,26 @@ const actions = {
     context.commit("setApiStatus", false);
     if (response.status === UNPROCESSABLE_ENTITY) {
       context.commit("setForgotPasswordErrorMessages", response.data.errors);
+    } else {
+      context.commit("error/setCode", response.status, { root: true });
+    }
+  },
+
+  // パスワードリセット
+  async resetPassword(context, data) {
+    context.commit("setApiStatus", null);
+    // axios.get("/sanctum/csrf-cookie", { withCredentials: true });
+
+    const response = await axios.post("/api/reset-password", data);
+    console.log(response);
+    if (response.status === OK) {
+      context.commit("setApiStatus", true);
+      return false;
+    }
+
+    context.commit("setApiStatus", false);
+    if (response.status === UNPROCESSABLE_ENTITY) {
+      context.commit("setRegisterErrorMessages", response.data.errors);
     } else {
       context.commit("error/setCode", response.status, { root: true });
     }

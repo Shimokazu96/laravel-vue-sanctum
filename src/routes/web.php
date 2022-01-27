@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ResetPasswordController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,10 +16,10 @@ use App\Http\Controllers\ResetPasswordController;
 //     return view('app');
 // })->where('any', '.*');
 Route::get('/', function () {
-  return view('index');
+  return view('index'); //the view for the spa base-html
 })->name('login');
 
-Route::get('/reset-password/{token}', ResetPasswordController::class)
-  ->name('password.reset');
-
+Route::get('/reset-password/{token}', function () {
+  return view('index');     //the view for the spa base-html
+})->name('password.reset'); //laravel needs a route with this name for password reset
 Route::get('/{any?}', fn () => view('index'))->where('any', '.+');
