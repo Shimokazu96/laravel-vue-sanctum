@@ -6,6 +6,7 @@ import Login from "../pages/auth/Login.vue";
 import Register from "../pages/auth/Register.vue";
 import VerifyEmail from "../pages/auth/VerifyEmail.vue";
 import ForgotPassword from "../pages/auth/ForgotPassword.vue";
+import ResetPassword from "../pages/auth/ResetPassword.vue";
 import User from "../pages/User.vue";
 import store from "../store";
 import SystemError from "../pages/errors/System.vue";
@@ -15,7 +16,6 @@ const routes = [
   {
     path: "/",
     component: PhotoList,
-    name: "PhotoList",
   },
   {
     path: "/register",
@@ -27,7 +27,6 @@ const routes = [
       }
     },
     component: Register,
-    name: "Register",
   },
   {
     path: "/login",
@@ -39,7 +38,6 @@ const routes = [
       }
     },
     component: Login,
-    name: "login",
   },
   {
     path: "/forgot-password",
@@ -51,7 +49,11 @@ const routes = [
       }
     },
     component: ForgotPassword,
-    name: "ForgotPassword",
+  },
+  {
+    path: "/reset-password/:token",
+    component: ResetPassword,
+    props: true,
   },
   {
     path: "/email/verify",
@@ -67,7 +69,6 @@ const routes = [
       }
     },
     component: VerifyEmail,
-    name: "VerifyEmail",
   },
   {
     path: "/user",
