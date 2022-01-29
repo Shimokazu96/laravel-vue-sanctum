@@ -22,14 +22,14 @@
         v-if="!isLogin"
         class="py-1 px-4 border-2 border-green-800 rounded"
         to="/login"
-        >サインイン</RouterLink
-      >
+        >サインイン
+      </RouterLink>
       <RouterLink
         v-if="!isLogin"
         class="ml-3 py-1 px-4 border-2 border-green-800 rounded"
         to="/register"
-        >登録する</RouterLink
-      >
+        >登録する
+      </RouterLink>
     </div>
   </header>
 </template>

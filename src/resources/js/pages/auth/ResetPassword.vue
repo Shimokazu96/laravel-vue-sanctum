@@ -5,21 +5,18 @@
         <div v-if="apiStatus" class="my-12 text-center">
           <div
             v-if="getMessage"
-            class="
-              bg-green-100
-              rounded-lg
-              p-4
-              m-auto
-              mb-4
-              w-3/5
-              text-sm text-green-700
-            "
+            class="bg-green-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-green-700"
             role="alert"
           >
             <div>
               {{ getMessage }}
             </div>
           </div>
+          <RouterLink
+            class="block m-auto w-3/5 text-xl bg-blue-600 text-white py-2 px-2 rounded"
+            to="/login"
+            >サインイン
+          </RouterLink>
         </div>
         <div v-if="!apiStatus" class="my-12 text-center">
           <h2 class="text-3xl mb-2 font-bold">パスワード再設定</h2>
@@ -29,16 +26,7 @@
                 <li
                   v-for="msg in registerErrors.email"
                   :key="msg"
-                  class="
-                    flex
-                    bg-red-100
-                    rounded-lg
-                    p-4
-                    m-auto
-                    mb-4
-                    w-3/5
-                    text-sm text-red-700
-                  "
+                  class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700"
                 >
                   {{ msg }}
                 </li>
@@ -47,16 +35,7 @@
                 <li
                   v-for="msg in registerErrors.password"
                   :key="msg"
-                  class="
-                    flex
-                    bg-red-100
-                    rounded-lg
-                    p-4
-                    m-auto
-                    mb-4
-                    w-3/5
-                    text-sm text-red-700
-                  "
+                  class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700"
                 >
                   {{ msg }}
                 </li>
