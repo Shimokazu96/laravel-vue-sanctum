@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // ページコンポーネントをインポートする
-import PhotoList from "../pages/PhotoList.vue";
+import Top from "../pages/Top.vue";
 import Login from "../pages/auth/Login.vue";
 import Register from "../pages/auth/Register.vue";
 import VerifyEmail from "../pages/auth/VerifyEmail.vue";
@@ -15,7 +15,7 @@ import NotFound from "../pages/errors/NotFound.vue";
 const routes = [
   {
     path: "/",
-    component: PhotoList,
+    component: Top,
   },
   {
     path: "/register",
