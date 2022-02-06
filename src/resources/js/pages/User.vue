@@ -16,45 +16,43 @@
         <p class="px-2 text-sm">Email</p>
         <p class="text-xs text-gray-400">{{ user.email }}</p>
       </div>
-      <button
-        class="bg-blue-600 px-8 py-2 mt-8 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide"
-      >View More
-      </button>
+      <RouterLink
+        class="block bg-blue-600 px-8 py-2 mt-8 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide"
+        :to="`/user/${user.id}/detail`"
+        >View More
+      </RouterLink>
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  data() {
+import { defineComponent, ref } from "vue";
+
+export default defineComponent({
+  setup() {
+    const user = ref("");
+
+    const getUser = async () => {
+      try {
+        await axios
+          .get("/api/user")
+          .then((response) => {
+            console.log("ログイン済み");
+            user.value = response.data;
+          })
+          .catch((error) => {
+            console.log("ログインしてません");
+            console.log(error);
+          });
+      } catch (err) {
+        console.log("Failure");
+      }
+    };
+    getUser();
+    
     return {
-      user: "",
+      user,
     };
   },
-  mounted() {
-    axios
-      .get("/api/user")
-      .then((response) => {
-        console.log("ログイン済み");
-        this.user = response.data;
-      })
-      .catch((error) => {
-        console.log("ログインしてません");
-        console.log(error);
-      });
-  },
-  // methods: {
-  //   logout() {
-  //     axios
-  //       .post("api/logout")
-  //       .then((response) => {
-  //         console.log(response);
-  //         this.$router.push("/login");
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   },
-  // },
-};
+});
 </script>

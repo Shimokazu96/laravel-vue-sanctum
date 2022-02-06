@@ -23,6 +23,8 @@ Route::group([
     Route::get('/user',function (Request $request) {
         return Auth::user();
     })->name('user');
+    // ユーザー詳細
+    Route::get('/user/{user}/detail', 'UserController@show')->name('user.show');
     Route::get('/', function (Request $request) {
         return "hello";
     });

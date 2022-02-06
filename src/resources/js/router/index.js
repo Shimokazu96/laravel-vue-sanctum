@@ -8,6 +8,7 @@ import VerifyEmail from "../pages/auth/VerifyEmail.vue";
 import ForgotPassword from "../pages/auth/ForgotPassword.vue";
 import ResetPassword from "../pages/auth/ResetPassword.vue";
 import User from "../pages/User.vue";
+import UserDetail from "../pages/UserDetail.vue";
 import store from "../store";
 import SystemError from "../pages/errors/System.vue";
 import NotFound from "../pages/errors/NotFound.vue";
@@ -74,6 +75,13 @@ const routes = [
     path: "/user",
     component: User,
     name: "user",
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/user/:id/detail",
+    component: UserDetail,
+    name: "userDetail",
+    props: true,
     meta: { requiresAuth: true },
   },
   {
