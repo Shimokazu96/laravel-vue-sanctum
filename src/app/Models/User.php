@@ -41,4 +41,13 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * リレーションシップ - user_detailsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function user_detail()
+    {
+        return $this->hasOne('App\Models\UserDetail');
+    }
 }
