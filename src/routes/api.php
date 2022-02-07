@@ -24,7 +24,8 @@ Route::group([
         return Auth::user();
     })->name('user');
     // ユーザー詳細
-    Route::get('/user/{user}/detail', 'UserController@show')->name('user.show');
+    Route::get('/user/{user}', 'UserController@show')->name('user.show');
+    Route::put('/user/{user}/edit', 'UserController@update')->name('user.edit');
     Route::get('/', function (Request $request) {
         return "hello";
     });

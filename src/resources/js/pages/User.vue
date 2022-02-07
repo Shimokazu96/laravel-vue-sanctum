@@ -18,7 +18,7 @@
       </div>
       <RouterLink
         class="block bg-blue-600 px-8 py-2 mt-8 rounded-3xl text-gray-100 font-semibold uppercase tracking-wide"
-        :to="`/user/${user.id}/detail`"
+        :to="`/user/${user.id}`"
         >View More
       </RouterLink>
     </div>
@@ -49,7 +49,7 @@ export default defineComponent({
       }
     };
     getUser();
-    
+
     return {
       user,
     };

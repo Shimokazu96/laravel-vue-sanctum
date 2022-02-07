@@ -1,7 +1,6 @@
 <template>
   <div class="flex flex-col h-screen">
     <Navbar />
-    <!-- <p>{{ isLogin }}</p> -->
     <RouterView />
     <Footer />
   </div>
