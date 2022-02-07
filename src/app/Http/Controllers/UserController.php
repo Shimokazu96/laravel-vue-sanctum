@@ -46,6 +46,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        clock($user->with(['user_detail'])->first());
         return $user->with(['user_detail'])->first() ?? abort(404);
     }
 
@@ -71,7 +72,6 @@ class UserController extends Controller
     {
         $user->fill($request->except(['user_detail']));
         $user->save();
-        // dd($user->user_detail()->first());
 
         $user_detail = $user->user_detail()->first();
         $user_detail->fill($request->input('user_detail'));

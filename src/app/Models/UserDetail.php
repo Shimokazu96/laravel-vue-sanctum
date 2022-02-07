@@ -12,4 +12,13 @@ class UserDetail extends Model
     protected $guarded = [
         'id',
     ];
+    protected $visible = [
+        'tel',
+        'pref',
+        'zip',
+        'city',
+        'address',
+        'building',
+        'birthday',
+    ];
 }
