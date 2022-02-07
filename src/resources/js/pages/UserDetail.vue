@@ -1,6 +1,6 @@
 <template>
   <div class="bg-gray-100 flex-grow">
-    <div class="w-10/12 mx-auto my-5 p-5">
+    <div class="container mx-auto my-5 p-5">
       <div class="md:flex no-wrap md:-mx-2">
         <!-- Left Side -->
         <div class="w-full md:w-3/12 md:mx-2">
@@ -13,6 +13,9 @@
                 alt=""
               />
             </div>
+            <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">
+              {{ username }}
+            </h1>
             <h3 class="text-gray-600 font-lg text-semibold leading-6">
               Owner at Her Company Inc.
             </h3>
@@ -52,56 +55,97 @@
               <span class="tracking-wide">About</span>
             </div>
             <div
-                v-if="getMessage"
-                class="bg-green-100 rounded-lg p-4 m-auto mb-4 w-4/5 text-sm text-green-700"
-                role="alert"
-              >
-                <div>
-                  {{ getMessage }}
-                </div>
+              v-if="getMessage"
+              class="bg-green-100 rounded-lg p-4 m-auto mb-4 w-4/5 text-sm text-green-700"
+              role="alert"
+            >
+              <div>
+                {{ getMessage }}
               </div>
+            </div>
             <div class="text-gray-700">
               <form @submit.prevent="updateUser">
-                <div class="grid md:grid-cols-2 text-sm">
+                <div class="xl:grid xl:grid-cols-2 text-sm">
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">名前</div>
-                    <input v-if="user.name" type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.name">
+                    <input
+                      type="text"
+                      class="w-2/3 px-4 py-2 border rounded"
+                      v-model="user.name"
+                    />
                   </div>
                   <!-- <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">名前(フリガナ)</div>
-                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.furigana">
+                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.furigana">
                   </div> -->
                   <div class="flex flex-wrap flex-row mt-2">
-                    <div class="w-1/3 px-4 py-2 font-semibold">メールアドレス</div>
-                      <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.email">
+                    <div class="w-1/3 px-4 py-2 font-semibold">
+                      メールアドレス
+                    </div>
+                    <input
+                      type="text"
+                      class="w-2/3 px-4 py-2 border rounded"
+                      v-model="user.email"
+                    />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">電話番号</div>
-                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.tel">
+                    <input
+                      type="text"
+                      class="w-2/3 px-4 py-2 border rounded"
+                      v-model="user.user_detail.tel"
+                    />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">誕生日</div>
-                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.birthday">
+                    <input
+                      type="text"
+                      class="w-2/3 px-4 py-2 border rounded"
+                      v-model="user.user_detail.birthday"
+                    />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">郵便番号</div>
-                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.zip">
+                    <input
+                      type="text"
+                      class="w-2/3 px-4 py-2 border rounded"
+                      v-model="user.user_detail.zip"
+                    />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">都道府県</div>
-                    <select id="shop_pref" name="input_pref" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.pref">
+                    <select
+                      id="pref"
+                      name="input_pref"
+                      class="w-2/3 px-4 py-2 border rounded"
+                      v-model="user.user_detail.pref"
+                    >
                       <option value="">都道府県選択</option>
-                      <option :value="pref.id" v-for="(pref, index) in _prefs" >{{pref.name}}</option>
+                      <option
+                        :value="pref.id"
+                        :key="index"
+                        v-for="(pref, index) in prefList"
+                      >
+                        {{ pref.name }}
+                      </option>
                     </select>
                     <!-- <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.pref"> -->
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">住所</div>
-                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.city">
+                    <input
+                      type="text"
+                      class="w-2/3 px-4 py-2 border rounded"
+                      v-model="user.user_detail.city"
+                    />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">建物</div>
-                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.building">
+                    <input
+                      type="text"
+                      class="w-2/3 px-4 py-2 border rounded"
+                      v-model="user.user_detail.building"
+                    />
                   </div>
                 </div>
                 <button
@@ -210,10 +254,12 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, reactive, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { OK } from "../util";
 import { prefs } from "../prefs";
+
+let YubinBango = require('yubinbango-core2')
 
 export default defineComponent({
   props: {
@@ -223,13 +269,25 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const user = ref("");
+    const user = reactive({
+      name: "",
+      email: "",
+      user_detail:{
+        tel: "",
+        birthday: "",
+        zip: "",
+        pref: "",
+        city: "",
+        address: "",
+        building: "",
+      }
+    });
+    
     const id = ref(props.id);
     const store = useStore();
     const getMessage = ref("");
-    console.log(prefs);
-    const _prefs = prefs;
-    console.log(_prefs);
+    const prefList = prefs;
+    const username = computed(() => store.getters["auth/username"]);
 
     const getUser = async () => {
       try {
@@ -238,7 +296,10 @@ export default defineComponent({
             store.commit("error/setCode", response.status);
             return false;
           }
-          user.value = response.data;
+          console.log(response.data);
+          user.name = response.data.name;
+          user.email = response.data.email;
+          user.user_detail = response.data.user_detail;
         });
       } catch (err) {
         console.log("Failure");
@@ -252,10 +313,12 @@ export default defineComponent({
     const updateUser = async () => {
       try {
         await axios
-          .put(`/api/user/${id.value}/edit`,user.value)
+          .put(`/api/user/${id.value}/edit`, user)
           .then((response) => {
             console.log(response);
-            user.value = response.data;
+            user.name = response.data.name;
+            user.email = response.data.email;
+            user.user_detail = response.data.user_detail;
             getMessage.value = "更新しました。";
             setTimeout(closeMessage, 6000);
           })
@@ -267,12 +330,22 @@ export default defineComponent({
         console.log("Failure");
       }
     };
+    
+    watch(user.user_detail.zip, () => {
+      new YubinBango.Core(user.user_detail.zip, (addr)=> {
+        user.user_detail.pref = addr.region // 都道府県
+        user.user_detail.city += addr.locality // 市区町村
+        user.user_detail.address += addr.street // 町域
+      })
+    })
 
     return {
       user,
-      _prefs,
+      username,
+      // user_detail,
+      prefList,
       getMessage,
-      updateUser
+      updateUser,
     };
   },
 });
