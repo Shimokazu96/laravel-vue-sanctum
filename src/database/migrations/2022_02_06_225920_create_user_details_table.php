@@ -20,15 +20,15 @@ class CreateUserDetailsTable extends Migration
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
-            $table->integer('tel')->nullable();
-            $table->string('furigana')->nullable();
+            $table->string('tel')->nullable();
+            // $table->string('furigana')->nullable();
             $table->string('nickname')->nullable();
-            $table->integer('zip')->nullable();
+            $table->string('zip')->nullable();
             $table->integer('pref')->nullable();
             $table->string('city')->nullable();
             $table->string('address')->nullable();
             $table->string('building')->nullable();
-            $table->integer('gender')->nullable();
+            // $table->integer('gender')->nullable();
             $table->date('birthday')->nullable();
             $table->text('introduction')->nullable();
             $table->timestamps();

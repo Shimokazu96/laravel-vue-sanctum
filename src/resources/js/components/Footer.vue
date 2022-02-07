@@ -1,5 +1,5 @@
 <template>
-  <footer class="w-full bg-grey-lighter py-8">
+  <footer class="flex w-full bg-grey-lighter py-8">
     <div class="container mx-auto text-center px-8">
         <p class="text-grey-dark mb-2 text-sm">This is a product of <span class="font-bold">SaunaBouya</span></p>
     </div>
@@ -8,7 +8,7 @@
 <script>
 import { defineComponent, computed } from "vue";
 
-import {useStore} from "vuex";
+import { useStore } from "vuex";
 import { useRouter } from 'vue-router'
 
 export default defineComponent({

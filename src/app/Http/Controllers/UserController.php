@@ -46,8 +46,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user = $user->with(['user_detail'])->first();
-        return $user ?? abort(404);
+        return $user->with(['user_detail'])->first() ?? abort(404);
     }
 
     /**
@@ -68,9 +67,17 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $user->fill($request->except(['user_detail']));
+        $user->save();
+        // dd($user->user_detail()->first());
+
+        $user_detail = $user->user_detail()->first();
+        $user_detail->fill($request->input('user_detail'));
+        $user_detail->save();
+
+        return response()->json($user->with(['user_detail'])->first(), 200) ??  response()->json([], 500);
     }
 
     /**

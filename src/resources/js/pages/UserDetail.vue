@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-gray-100">
-    <div class="container mx-auto my-5 p-5">
+  <div class="bg-gray-100 flex-grow">
+    <div class="w-10/12 mx-auto my-5 p-5">
       <div class="md:flex no-wrap md:-mx-2">
         <!-- Left Side -->
         <div class="w-full md:w-3/12 md:mx-2">
@@ -13,12 +13,6 @@
                 alt=""
               />
             </div>
-            <h1 v-if="user.user_detail.nickname" class="text-gray-900 font-bold text-xl leading-8 my-1">
-              {{ user.user_detail.nickname }}
-            </h1>
-            <h1 v-else class="text-gray-900 font-bold text-xl leading-8 my-1">
-                ニックネーム
-            </h1>
             <h3 class="text-gray-600 font-lg text-semibold leading-6">
               Owner at Her Company Inc.
             </h3>
@@ -32,7 +26,7 @@
           <div class="my-4"></div>
         </div>
         <!-- Right Side -->
-        <div class="w-full md:w-9/12 mx-2 h-64">
+        <div class="w-full md:w-9/12 mx-2">
           <!-- Profile tab -->
           <!-- About Section -->
           <div class="bg-white p-3 shadow-sm rounded-sm">
@@ -57,59 +51,67 @@
               </span>
               <span class="tracking-wide">About</span>
             </div>
-            <div class="text-gray-700">
-              <div class="grid md:grid-cols-2 text-sm">
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">名前</div>
-                  <div class="px-4 py-2">{{ user.name }}</div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">名前(フリガナ)</div>
-                  <div class="px-4 py-2">{{ user.user_detail.furigana }}</div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">性別</div>
-                  <div class="px-4 py-2">{{ user.user_detail.gender }}</div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">電話番号</div>
-                  <div class="px-4 py-2">{{ user.user_detail.tel }}</div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">郵便番号</div>
-                  <div class="px-4 py-2">{{ user.user_detail.zip }}</div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">都道府県</div>
-                  <div class="px-4 py-2">{{ user.user_detail.pref }}</div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">住所</div>
-                  <div class="px-4 py-2">{{ user.user_detail.city }}</div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">建物</div>
-                  <div class="px-4 py-2">{{ user.user_detail.building }}</div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">Email.</div>
-                  <div class="px-4 py-2">
-                    <a class="text-blue-800" :href="`mailto:${user.email}`"
-                      >{{ user.email }}</a
-                    >
-                  </div>
-                </div>
-                <div class="grid grid-cols-2">
-                  <div class="px-4 py-2 font-semibold">誕生日</div>
-                  <div class="px-4 py-2">{{ user.user_detail.birthday }}</div>
+            <div
+                v-if="getMessage"
+                class="bg-green-100 rounded-lg p-4 m-auto mb-4 w-4/5 text-sm text-green-700"
+                role="alert"
+              >
+                <div>
+                  {{ getMessage }}
                 </div>
               </div>
+            <div class="text-gray-700">
+              <form @submit.prevent="updateUser">
+                <div class="grid md:grid-cols-2 text-sm">
+                  <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">名前</div>
+                    <input v-if="user.name" type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.name">
+                  </div>
+                  <!-- <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">名前(フリガナ)</div>
+                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.furigana">
+                  </div> -->
+                  <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">メールアドレス</div>
+                      <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.email">
+                  </div>
+                  <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">電話番号</div>
+                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.tel">
+                  </div>
+                  <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">誕生日</div>
+                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.birthday">
+                  </div>
+                  <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">郵便番号</div>
+                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.zip">
+                  </div>
+                  <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">都道府県</div>
+                    <select id="shop_pref" name="input_pref" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.pref">
+                      <option value="">都道府県選択</option>
+                      <option :value="pref.id" v-for="(pref, index) in _prefs" >{{pref.name}}</option>
+                    </select>
+                    <!-- <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.pref"> -->
+                  </div>
+                  <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">住所</div>
+                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.city">
+                  </div>
+                  <div class="flex flex-wrap flex-row mt-2">
+                    <div class="w-1/3 px-4 py-2 font-semibold">建物</div>
+                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.building">
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4"
+                >
+                  ユーザー情報を更新する
+                </button>
+              </form>
             </div>
-            <button
-              class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4"
-            >
-              ユーザー情報を更新する
-            </button>
           </div>
           <!-- End of about section -->
 
@@ -117,7 +119,7 @@
 
           <!-- Experience and education -->
           <div class="bg-white p-3 shadow-sm rounded-sm">
-            <div class="grid grid-cols-2">
+            <div class="grid grid-cols-2 mt-2">
               <div>
                 <div
                   class="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3"
@@ -211,6 +213,7 @@
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
 import { OK } from "../util";
+import { prefs } from "../prefs";
 
 export default defineComponent({
   props: {
@@ -223,15 +226,18 @@ export default defineComponent({
     const user = ref("");
     const id = ref(props.id);
     const store = useStore();
+    const getMessage = ref("");
+    console.log(prefs);
+    const _prefs = prefs;
+    console.log(_prefs);
 
     const getUser = async () => {
       try {
-        await axios.get(`/api/user/${id.value}/detail`).then((response) => {
+        await axios.get(`/api/user/${id.value}`).then((response) => {
           if (response.status !== OK) {
             store.commit("error/setCode", response.status);
             return false;
           }
-          console.log(response.data);
           user.value = response.data;
         });
       } catch (err) {
@@ -239,8 +245,34 @@ export default defineComponent({
       }
     };
     getUser();
+
+    const closeMessage = () => {
+      getMessage.value = "";
+    };
+    const updateUser = async () => {
+      try {
+        await axios
+          .put(`/api/user/${id.value}/edit`,user.value)
+          .then((response) => {
+            console.log(response);
+            user.value = response.data;
+            getMessage.value = "更新しました。";
+            setTimeout(closeMessage, 6000);
+          })
+          .catch((err) => {
+            getMessage.value = "更新に失敗しました。";
+            setTimeout(closeMessage, 6000);
+          });
+      } catch (err) {
+        console.log("Failure");
+      }
+    };
+
     return {
       user,
+      _prefs,
+      getMessage,
+      updateUser
     };
   },
 });
