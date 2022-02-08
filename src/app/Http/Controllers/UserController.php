@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 
 class UserController extends Controller
@@ -46,7 +47,6 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        clock($user->with(['user_detail'])->first());
         return $user->with(['user_detail'])->first() ?? abort(404);
     }
 
@@ -68,7 +68,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
         $user->fill($request->except(['user_detail']));
         $user->save();
