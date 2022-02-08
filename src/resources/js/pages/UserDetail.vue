@@ -55,14 +55,16 @@
               <span class="tracking-wide">About</span>
             </div>
             <div
-              v-if="getMessage"
-              class="bg-green-100 rounded-lg p-4 m-auto mb-4 w-4/5 text-sm text-green-700"
-              role="alert"
+              v-if="updateMessage"
+              class="rounded-lg p-4 m-auto mb-4 w-4/5 text-sm bg-green-100 text-green-700"
             >
-              <div>
-                {{ getMessage }}
-              </div>
+              {{ updateMessage }}
             </div>
+            <template v-if="errorMessage">
+              <div v-for="error in errorMessage" :key="error.id" class="rounded-lg p-4 m-auto mb-4 w-4/5 text-sm bg-red-100 text-red-700">
+                {{ error[0] }}
+              </div>
+            </template>
             <div class="text-gray-700">
               <form @submit.prevent="updateUser">
                 <div class="xl:grid xl:grid-cols-2 text-sm">
@@ -97,26 +99,26 @@
                     />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
-                    <div class="w-1/3 px-4 py-2 font-semibold">誕生日</div>
+                    <div class="w-1/3 px-4 py-2 font-semibold">生年月日</div>
                     <input
-                      type="text"
+                      type="date"
                       class="w-2/3 px-4 py-2 border rounded"
                       v-model="user.user_detail.birthday"
                     />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
-                    <div class="w-1/3 px-4 py-2 font-semibold">郵便番号</div>
+                    <div class="w-4/12 px-4 py-2 font-semibold">郵便番号</div>
                     <input
                       type="text"
-                      class="w-2/3 px-4 py-2 border rounded"
+                      class="w-3/12 mr-2 px-4 py-2 border rounded"
                       v-model="user.user_detail.zip"
                     />
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded whitespace-nowrap" @click.prevent="searchAddress()">住所検索</button>
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">都道府県</div>
                     <select
                       id="pref"
-                      name="input_pref"
                       class="w-2/3 px-4 py-2 border rounded"
                       v-model="user.user_detail.pref"
                     >
@@ -136,7 +138,7 @@
                     <input
                       type="text"
                       class="w-2/3 px-4 py-2 border rounded"
-                      v-model="user.user_detail.city"
+                      v-model="user.user_detail.address"
                     />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
@@ -254,12 +256,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, reactive, computed, watch } from "vue";
+import { defineComponent, ref, reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { OK } from "../util";
 import { prefs } from "../prefs";
-
-let YubinBango = require('yubinbango-core2')
+import { Core as YubinBangoCore } from 'yubinbango-core2'
 
 export default defineComponent({
   props: {
@@ -277,15 +278,15 @@ export default defineComponent({
         birthday: "",
         zip: "",
         pref: "",
-        city: "",
         address: "",
         building: "",
       }
     });
-    
+
     const id = ref(props.id);
     const store = useStore();
-    const getMessage = ref("");
+    const updateMessage = ref("");
+    const errorMessage = ref({});
     const prefList = prefs;
     const username = computed(() => store.getters["auth/username"]);
 
@@ -296,56 +297,68 @@ export default defineComponent({
             store.commit("error/setCode", response.status);
             return false;
           }
-          console.log(response.data);
           user.name = response.data.name;
           user.email = response.data.email;
           user.user_detail = response.data.user_detail;
+          user.user_detail.pref = response.data.user_detail.pref ? response.data.user_detail.pref : "",
+          console.log(user.user_detail);
         });
       } catch (err) {
         console.log("Failure");
       }
     };
-    getUser();
+    onMounted(() => {
+      getUser();
+    })
 
     const closeMessage = () => {
-      getMessage.value = "";
+      updateMessage.value = "";
+      errorMessage.value = "";
     };
     const updateUser = async () => {
       try {
         await axios
-          .put(`/api/user/${id.value}/edit`, user)
+          .put(`/api/user/${id.value}/update`, user)
           .then((response) => {
+            if (response.status !== OK) {
+              console.log(response);
+              errorMessage.value = response.data.errors;
+              // setTimeout(closeMessage, 6000);
+              store.commit("error/setCode", response.status);
+              return false;
+            }
             console.log(response);
             user.name = response.data.name;
             user.email = response.data.email;
             user.user_detail = response.data.user_detail;
-            getMessage.value = "更新しました。";
+            updateMessage.value = "更新しました。";
             setTimeout(closeMessage, 6000);
           })
           .catch((err) => {
-            getMessage.value = "更新に失敗しました。";
+            updateMessage.value = "更新に失敗しました。";
             setTimeout(closeMessage, 6000);
           });
       } catch (err) {
         console.log("Failure");
       }
     };
-    
-    watch(user.user_detail.zip, () => {
-      new YubinBango.Core(user.user_detail.zip, (addr)=> {
-        user.user_detail.pref = addr.region // 都道府県
-        user.user_detail.city += addr.locality // 市区町村
-        user.user_detail.address += addr.street // 町域
+
+    const searchAddress = () => {
+      new YubinBangoCore(user.user_detail.zip, (value)=> {
+        user.user_detail.pref = value.region_id // 都道府県
+        user.user_detail.address = value.locality // 市区町村
+        user.user_detail.address += value.street // 町域
       })
-    })
+    };
 
     return {
       user,
       username,
-      // user_detail,
       prefList,
-      getMessage,
+      updateMessage,
+      errorMessage,
       updateUser,
+      searchAddress
     };
   },
 });

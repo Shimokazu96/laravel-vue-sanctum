@@ -94,4 +94,5 @@ $ docker-compose restart
 ### Composer 追加パッケージ
 
 - [laravel/sanctum](https://github.com/laravel/sanctum)
+- [laravel/fortify](https://github.com/laravel/fortify)
 - [barryvdh/laravel-debugbar](https://github.com/barryvdh/laravel-debugbar)
