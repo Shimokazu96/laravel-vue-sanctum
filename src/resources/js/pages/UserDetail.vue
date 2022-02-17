@@ -54,14 +54,13 @@
               </span>
               <span class="tracking-wide">About</span>
             </div>
-            <div
-              v-if="updateMessage"
-              class="rounded-lg p-4 m-auto mb-4 w-4/5 text-sm bg-green-100 text-green-700"
-            >
-              {{ updateMessage }}
-            </div>
+            <UpdateMessage />
             <template v-if="errorMessage">
-              <div v-for="error in errorMessage" :key="error.id" class="rounded-lg p-4 m-auto mb-4 w-4/5 text-sm bg-red-100 text-red-700">
+              <div
+                v-for="error in errorMessage"
+                :key="error.id"
+                class="rounded-lg p-4 m-auto mb-4 w-4/5 text-sm bg-red-100 text-red-700"
+              >
                 {{ error[0] }}
               </div>
             </template>
@@ -80,7 +79,7 @@
                     <div class="w-1/3 px-4 py-2 font-semibold">名前(フリガナ)</div>
                     <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.furigana">
                   </div> -->
-                  <div class="flex flex-wrap flex-row mt-2">
+                  <!-- <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">
                       メールアドレス
                     </div>
@@ -89,7 +88,7 @@
                       class="w-2/3 px-4 py-2 border rounded"
                       v-model="user.email"
                     />
-                  </div>
+                  </div> -->
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">電話番号</div>
                     <input
@@ -113,7 +112,12 @@
                       class="w-3/12 mr-2 px-4 py-2 border rounded"
                       v-model="user.user_detail.zip"
                     />
-                    <button class="bg-blue-600 text-white px-4 py-2 rounded whitespace-nowrap" @click.prevent="searchAddress()">住所検索</button>
+                    <button
+                      class="bg-blue-600 text-white px-4 py-2 rounded whitespace-nowrap"
+                      @click.prevent="searchAddress()"
+                    >
+                      住所検索
+                    </button>
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">都道府県</div>
@@ -126,7 +130,7 @@
                       <option
                         :value="pref.id"
                         :key="index"
-                        v-for="(pref, index) in PREFS"
+                        v-for="(pref, index) in PREFECTURES"
                       >
                         {{ pref.name }}
                       </option>
@@ -255,110 +259,102 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref, reactive, computed, onMounted } from "vue";
+<script setup>
+import {
+  defineProps,
+  defineComponent,
+  ref,
+  reactive,
+  computed,
+  onMounted,
+} from "vue";
 import { useStore } from "vuex";
 import { OK } from "../util";
-import { PREFS } from "../user-constant";
-import { Core as YubinBangoCore } from 'yubinbango-core2'
+import { PREFECTURES } from "../user-constant";
+import UpdateMessage from "../components/UpdateMessage.vue";
+import { Core as YubinBangoCore } from "yubinbango-core2";
 
-export default defineComponent({
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-  },
-  setup(props) {
-    const user = reactive({
-      name: "",
-      email: "",
-      user_detail:{
-        tel: "",
-        birthday: "",
-        zip: "",
-        pref: "",
-        address: "",
-        building: "",
-      }
-    });
-
-    const id = ref(props.id);
-    const store = useStore();
-    const updateMessage = ref("");
-    const errorMessage = ref({});
-    const username = computed(() => store.getters["auth/username"]);
-
-    const getUser = async () => {
-      try {
-        await axios.get(`/api/user/${id.value}`).then((response) => {
-          if (response.status !== OK) {
-            store.commit("error/setCode", response.status);
-            return false;
-          }
-          user.name = response.data.name;
-          user.email = response.data.email;
-          user.user_detail = response.data.user_detail;
-          user.user_detail.pref = response.data.user_detail.pref ? response.data.user_detail.pref : "",
-          console.log(user.user_detail);
-        });
-      } catch (err) {
-        console.log("Failure");
-      }
-    };
-    onMounted(() => {
-      getUser();
-    })
-
-    const closeMessage = () => {
-      updateMessage.value = "";
-      errorMessage.value = "";
-    };
-    const updateUser = async () => {
-      try {
-        await axios
-          .put(`/api/user/${id.value}/update`, user)
-          .then((response) => {
-            if (response.status !== OK) {
-              console.log(response);
-              errorMessage.value = response.data.errors;
-              // setTimeout(closeMessage, 6000);
-              store.commit("error/setCode", response.status);
-              return false;
-            }
-            console.log(response);
-            user.name = response.data.name;
-            user.email = response.data.email;
-            user.user_detail = response.data.user_detail;
-            updateMessage.value = "更新しました。";
-            setTimeout(closeMessage, 6000);
-          })
-          .catch((err) => {
-            updateMessage.value = "更新に失敗しました。";
-            setTimeout(closeMessage, 6000);
-          });
-      } catch (err) {
-        console.log("Failure");
-      }
-    };
-
-    const searchAddress = () => {
-      new YubinBangoCore(user.user_detail.zip, (value)=> {
-        user.user_detail.pref = value.region_id // 都道府県
-        user.user_detail.address = value.locality // 市区町村
-        user.user_detail.address += value.street // 町域
-      })
-    };
-
-    return {
-      user,
-      PREFS,
-      username,
-      updateMessage,
-      errorMessage,
-      updateUser,
-      searchAddress
-    };
+const props = defineProps({
+  id: {
+    type: String,
+    required: true,
   },
 });
+const user = reactive({
+  name: "",
+  user_detail: {
+    tel: "",
+    birthday: "",
+    zip: "",
+    pref: "",
+    address: "",
+    building: "",
+  },
+});
+
+const id = ref(props.id);
+const store = useStore();
+const errorMessage = ref({});
+const username = computed(() => store.getters["auth/username"]);
+
+const getUser = async () => {
+  try {
+    await axios.get(`/api/user/${id.value}`).then((response) => {
+      if (response.status !== OK) {
+        store.commit("error/setCode", response.status);
+        return false;
+      }
+      user.name = response.data.name;
+      user.user_detail = response.data.user_detail;
+      user.user_detail.pref = response.data.user_detail.pref
+        ? response.data.user_detail.pref
+        : "";
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+onMounted(() => {
+  getUser();
+});
+
+const closeMessage = () => {
+  errorMessage.value = "";
+};
+const updateUser = async () => {
+  try {
+    await axios
+      .put(`/api/user/${id.value}/update`, user)
+      .then((response) => {
+        if (response.status !== OK) {
+          errorMessage.value = response.data.errors;
+          // setTimeout(closeMessage, 6000);
+          store.commit("error/setCode", response.status);
+          return false;
+        }
+        user.name = response.data.name;
+        user.user_detail = response.data.user_detail;
+        store.commit("message/setContent", {
+          content: "更新しました。",
+          timeout: 6000,
+        });
+      })
+      .catch((err) => {
+        store.commit("message/setContent", {
+          content: "更新しました。",
+          timeout: 6000,
+        });
+      });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const searchAddress = () => {
+  new YubinBangoCore(user.user_detail.zip, (value) => {
+    user.user_detail.pref = value.region_id; // 都道府県
+    user.user_detail.address = value.locality; // 市区町村
+    user.user_detail.address += value.street; // 町域
+  });
+};
 </script>
