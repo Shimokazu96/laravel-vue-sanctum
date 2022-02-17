@@ -1,9 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen">
-    <Navbar />
-    <RouterView />
-    <Footer />
-  </div>
+  <RouterView />
 </template>
 
 <script>

@@ -15,6 +15,8 @@ use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
 use App\Http\Responses\LoginResponse;
 use Laravel\Fortify\Contracts\RegisterResponse as RegisterResponseContract;
 use App\Http\Responses\RegisterResponse;
+use Laravel\Fortify\Contracts\PasswordUpdateResponse as PasswordUpdateResponseContract;
+use App\Http\Responses\PasswordUpdateResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -42,7 +44,7 @@ class FortifyServiceProvider extends ServiceProvider
         RateLimiter::for('login', function (Request $request) {
             $email = (string) $request->email;
 
-            return Limit::perMinute(5)->by($email.$request->ip());
+            return Limit::perMinute(5)->by($email . $request->ip());
         });
 
         RateLimiter::for('two-factor', function (Request $request) {
@@ -51,5 +53,6 @@ class FortifyServiceProvider extends ServiceProvider
 
         $this->app->singleton(LoginResponseContract::class, LoginResponse::class);
         $this->app->singleton(RegisterResponseContract::class, RegisterResponse::class);
+        $this->app->singleton(PasswordUpdateResponseContract::class, PasswordUpdateResponse::class);
     }
 }
