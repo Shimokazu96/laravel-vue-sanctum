@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name'                    => 'required',
-            'email'                   => ['required', 'email', Rule::unique('users')->ignore($this->user)],
+            // 'email'                   => ['required', 'email', Rule::unique('users')->ignore($this->user)],
             'user_detail.tel'         => ['nullable', 'numeric', 'digits_between:8,11'],
             'user_detail.zip'         => ['nullable', 'numeric'],
         ];
