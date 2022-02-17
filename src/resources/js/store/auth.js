@@ -9,10 +9,11 @@ const state = {
 };
 
 const getters = {
-  check: (state) => !!state.user,
+  check: (state) => !!state.user, //仮登録状態チェック
   username: (state) => (state.user ? state.user.name : ""),
   userId: (state) => (state.user ? state.user.id : ""),
-  verified: (state) => (state.user && state.user.email_verified_at ? true : false),
+  emailVerified: (state) =>
+    state.user && state.user.email_verified_at ? true : false, //メール認証済みかチェック
 };
 
 const mutations = {
@@ -30,6 +31,12 @@ const mutations = {
   },
   setForgotPasswordErrorMessages(state, messages) {
     state.forgotPasswordErrorMessages = messages;
+  },
+  setUpdateEmailErrorMessages(state, messages) {
+    state.updateEmailErrorMessages = messages;
+  },
+  setUpdatePasswordErrorMessages(state, messages) {
+    state.updatePasswordErrorMessages = messages;
   },
 };
 
@@ -60,7 +67,7 @@ const actions = {
     axios.get("/sanctum/csrf-cookie", { withCredentials: true });
 
     const response = await axios.post("/api/login", data);
-
+    console.log(response);
     if (response.status === OK) {
       context.commit("setApiStatus", true);
       context.commit("setUser", response.data);
@@ -109,7 +116,6 @@ const actions = {
   // パスワードリセットメール
   async forgotPassword(context, data) {
     context.commit("setApiStatus", null);
-    // axios.get("/sanctum/csrf-cookie", { withCredentials: true });
 
     const response = await axios.post("/api/forgot-password", data);
     console.log(response);
@@ -129,7 +135,6 @@ const actions = {
   // パスワードリセット
   async resetPassword(context, data) {
     context.commit("setApiStatus", null);
-    // axios.get("/sanctum/csrf-cookie", { withCredentials: true });
 
     const response = await axios.post("/api/reset-password", data);
     console.log(response);
@@ -141,6 +146,47 @@ const actions = {
     context.commit("setApiStatus", false);
     if (response.status === UNPROCESSABLE_ENTITY) {
       context.commit("setRegisterErrorMessages", response.data.errors);
+    } else {
+      context.commit("error/setCode", response.status, { root: true });
+    }
+  },
+  // メールアドレス更新
+  async updateEmail(context, data) {
+    context.commit("setApiStatus", null);
+
+    const response = await axios.put(`/api/user/profile-information`, data);
+    console.log(response);
+    if (response.status === OK) {
+      context.commit("setApiStatus", true);
+      //メールアドレスに変更があった場合、認証状態を更新して認証メールを送る
+      context.commit("setUser", response.data);
+      return false;
+    }
+
+    context.commit("setApiStatus", false);
+    if (response.status === UNPROCESSABLE_ENTITY) {
+      context.commit("setUpdateEmailErrorMessages", response.data.errors);
+    } else {
+      context.commit("error/setCode", response.status, { root: true });
+    }
+  },
+  // パスワード更新
+  async updatePassword(context, data) {
+    context.commit("setApiStatus", null);
+
+    const response = await axios.put(`/api/user/password`, data);
+    console.log(response);
+    if (response.status === OK) {
+      //パスワードが更新されたら強制的にログアウトする
+      context.commit("setApiStatus", true);
+      const user = await axios.get("/api/user");
+      context.commit("setUser", null);
+      return false;
+    }
+
+    context.commit("setApiStatus", false);
+    if (response.status === UNPROCESSABLE_ENTITY) {
+      context.commit("setUpdatePasswordErrorMessages", response.data.errors);
     } else {
       context.commit("error/setCode", response.status, { root: true });
     }

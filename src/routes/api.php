@@ -29,6 +29,8 @@ Route::group([
     Route::get('/', function (Request $request) {
         return "hello";
     });
+    //メールアドレス更新
+    Route::put('/user/profile-information', 'ProfileInformationController@update')->name('user-profile-information.update'); // Laravel\Fortify\Http\Controllers\ProfileInformationControllerからコピー
 });
 
 // トークンリフレッシュ

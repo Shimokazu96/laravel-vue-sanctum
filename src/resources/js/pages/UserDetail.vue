@@ -126,7 +126,7 @@
                       <option
                         :value="pref.id"
                         :key="index"
-                        v-for="(pref, index) in prefList"
+                        v-for="(pref, index) in PREFS"
                       >
                         {{ pref.name }}
                       </option>
@@ -259,7 +259,7 @@
 import { defineComponent, ref, reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { OK } from "../util";
-import { prefs } from "../prefs";
+import { PREFS } from "../user-constant";
 import { Core as YubinBangoCore } from 'yubinbango-core2'
 
 export default defineComponent({
@@ -287,7 +287,6 @@ export default defineComponent({
     const store = useStore();
     const updateMessage = ref("");
     const errorMessage = ref({});
-    const prefList = prefs;
     const username = computed(() => store.getters["auth/username"]);
 
     const getUser = async () => {
@@ -353,8 +352,8 @@ export default defineComponent({
 
     return {
       user,
+      PREFS,
       username,
-      prefList,
       updateMessage,
       errorMessage,
       updateUser,

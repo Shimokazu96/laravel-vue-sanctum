@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-  return view('index'); //the view for the spa base-html
+  return view('index');
 })->name('login');
 
 Route::get('/reset-password/{token}', function () {
-  return view('index');     //the view for the spa base-html
-})->name('password.reset'); //laravel needs a route with this name for password reset
+  return view('index');
+})->name('password.reset'); //Laravel Fortifyではパスワードリセットをするには名前付きのルートが必要のため
 Route::get('/{any?}', fn () => view('index'))->where('any', '.+');
