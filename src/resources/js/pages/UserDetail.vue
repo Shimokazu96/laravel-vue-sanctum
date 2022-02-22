@@ -7,11 +7,21 @@
           <!-- Profile Card -->
           <div class="bg-white p-3 border-t-4 border-green-400">
             <div class="image overflow-hidden">
-              <img
-                class="h-auto w-full mx-auto"
-                src="/images/human.jpeg"
-                alt=""
-              />
+              <div class="w-40 h-40 m-auto">
+                <img
+                  v-if="!image"
+                  class="w-40 h-40 m-auto rounded-full shadow object-cover"
+                  src="/images/human.jpeg"
+                  alt=""
+                />
+                <img v-if="preview" :src="preview" class="w-40 h-40 m-auto rounded-full shadow object-cover" alt="" />
+
+              </div>
+
+              <label class="cursor-pointer mt-6">
+                <div class="items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 text-center uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150 mt-2">Select Avatar</div>
+                <input id="icon_image" type="file" class="hidden" @change="onFileChange" />
+              </label>
             </div>
             <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">
               {{ username }}
@@ -34,7 +44,14 @@
           <!-- About Section -->
           <div class="bg-white p-3 shadow-sm rounded-sm">
             <div
-              class="flex items-center space-x-2 font-semibold text-gray-900 leading-8"
+              class="
+                flex
+                items-center
+                space-x-2
+                font-semibold
+                text-gray-900
+                leading-8
+              "
             >
               <span clas="text-green-500">
                 <svg
@@ -60,6 +77,7 @@
                 v-for="error in errorMessage"
                 :key="error.id"
                 class="rounded-lg p-4 m-auto mb-4 w-4/5 text-sm bg-red-100 text-red-700"
+
               >
                 {{ error[0] }}
               </div>
@@ -72,12 +90,12 @@
                     <input
                       type="text"
                       class="w-2/3 px-4 py-2 border rounded"
-                      v-model="user.name"
+                      v-model="name"
                     />
                   </div>
                   <!-- <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">名前(フリガナ)</div>
-                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.furigana">
+                    <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="furigana">
                   </div> -->
                   <!-- <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">
@@ -86,7 +104,7 @@
                     <input
                       type="text"
                       class="w-2/3 px-4 py-2 border rounded"
-                      v-model="user.email"
+                      v-model="email"
                     />
                   </div> -->
                   <div class="flex flex-wrap flex-row mt-2">
@@ -94,7 +112,7 @@
                     <input
                       type="text"
                       class="w-2/3 px-4 py-2 border rounded"
-                      v-model="user.user_detail.tel"
+                      v-model="user_detail.tel"
                     />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
@@ -102,7 +120,7 @@
                     <input
                       type="date"
                       class="w-2/3 px-4 py-2 border rounded"
-                      v-model="user.user_detail.birthday"
+                      v-model="user_detail.birthday"
                     />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
@@ -110,7 +128,7 @@
                     <input
                       type="text"
                       class="w-3/12 mr-2 px-4 py-2 border rounded"
-                      v-model="user.user_detail.zip"
+                      v-model="user_detail.zip"
                     />
                     <button
                       class="bg-blue-600 text-white px-4 py-2 rounded whitespace-nowrap"
@@ -124,7 +142,7 @@
                     <select
                       id="pref"
                       class="w-2/3 px-4 py-2 border rounded"
-                      v-model="user.user_detail.pref"
+                      v-model="user_detail.pref"
                     >
                       <option value="">都道府県選択</option>
                       <option
@@ -135,14 +153,14 @@
                         {{ pref.name }}
                       </option>
                     </select>
-                    <!-- <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user.user_detail.pref"> -->
+                    <!-- <input type="text" class="w-2/3 px-4 py-2 border rounded" v-model="user_detail.pref"> -->
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
                     <div class="w-1/3 px-4 py-2 font-semibold">住所</div>
                     <input
                       type="text"
                       class="w-2/3 px-4 py-2 border rounded"
-                      v-model="user.user_detail.address"
+                      v-model="user_detail.address"
                     />
                   </div>
                   <div class="flex flex-wrap flex-row mt-2">
@@ -150,7 +168,7 @@
                     <input
                       type="text"
                       class="w-2/3 px-4 py-2 border rounded"
-                      v-model="user.user_detail.building"
+                      v-model="user_detail.building"
                     />
                   </div>
                 </div>
@@ -173,6 +191,7 @@
               <div>
                 <div
                   class="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3"
+
                 >
                   <span clas="text-green-500">
                     <svg
@@ -262,7 +281,6 @@
 <script setup>
 import {
   defineProps,
-  defineComponent,
   ref,
   reactive,
   computed,
@@ -280,19 +298,28 @@ const props = defineProps({
     required: true,
   },
 });
-const user = reactive({
-  name: "",
-  user_detail: {
-    tel: "",
-    birthday: "",
-    zip: "",
-    pref: "",
-    address: "",
-    building: "",
-  },
+const name = ref("");
+const image = ref(null);
+const user_detail = ref({
+  tel: "",
+  birthday: null,
+  zip: "",
+  pref: null,
+  address: "",
+  building: "",
 });
+// const user_detail = reactive({
+//   tel: "",
+//   birthday: "",
+//   zip: "",
+//   pref: "",
+//   address: "",
+//   building: "",
+//   image: "",
+// });
 
 const id = ref(props.id);
+const preview = ref("");
 const store = useStore();
 const errorMessage = ref({});
 const username = computed(() => store.getters["auth/username"]);
@@ -304,9 +331,9 @@ const getUser = async () => {
         store.commit("error/setCode", response.status);
         return false;
       }
-      user.name = response.data.name;
-      user.user_detail = response.data.user_detail;
-      user.user_detail.pref = response.data.user_detail.pref
+      name.value = response.data.name;
+      user_detail.value = response.data.user_detail;
+      user_detail.value.pref = response.data.user_detail.pref
         ? response.data.user_detail.pref
         : "";
     });
@@ -322,18 +349,37 @@ const closeMessage = () => {
   errorMessage.value = "";
 };
 const updateUser = async () => {
+  let formData = new FormData()
+  let config = {
+    headers: {
+      'content-type': 'multipart/form-data', //ファイルを送れるようmultipart/form-datを指定する
+      'X-HTTP-Method-Override': 'PUT' // ここでPUTに置き換える
+    }
+  };
+  //現状、スマートな書き方がわからないため各要素ごとに代入
+  formData.append('name', name.value)
+  user_detail.value.tel ? formData.append('tel', user_detail.value.tel) : ''
+  user_detail.value.birthday ? formData.append('birthday', user_detail.value.birthday) : ''
+  user_detail.value.zip ? formData.append('zip', user_detail.value.zip) : ''
+  user_detail.value.pref ? formData.append('pref', user_detail.value.pref) : ''
+  user_detail.value.address ? formData.append('address', user_detail.value.address) : ''
+  user_detail.value.building ? formData.append('building', user_detail.value.building) : ''
+  user_detail.value.image ? formData.append('image', image.value) : ''
+  for (let value of formData.entries()) {
+    console.log(value);
+  }
   try {
     await axios
-      .put(`/api/user/${id.value}/update`, user)
+      .post(`/api/user/${id.value}/update`, formData,config) // POSTを指定する
       .then((response) => {
         if (response.status !== OK) {
           errorMessage.value = response.data.errors;
-          // setTimeout(closeMessage, 6000);
           store.commit("error/setCode", response.status);
           return false;
         }
-        user.name = response.data.name;
-        user.user_detail = response.data.user_detail;
+        console.log(response);
+        name.value = response.data.name;
+        user_detail.value = response.data.user_detail;
         store.commit("message/setContent", {
           content: "更新しました。",
           timeout: 6000,
@@ -350,11 +396,45 @@ const updateUser = async () => {
   }
 };
 
+// フォームでファイルが選択されたら実行される
+const onFileChange = (event) => {
+  // 何も選択されていなかったら処理中断
+  if (event.target.files.length === 0) {
+    reset()
+    return false
+  }
+  // ファイルが画像ではなかったら処理中断
+  if ( !event.target.files[0].type.match('image.*')) {
+    reset()
+    return false
+  }
+  // FileReaderクラスのインスタンスを取得
+  const reader = new FileReader()
+  // ファイルを読み込み終わったタイミングで実行する処理
+  reader.onload = e => {
+    // previewに読み込み結果（データURL）を代入する
+    // previewに値が入ると<output>につけたv-ifがtrueと判定される
+    // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
+    // 結果として画像が表示される
+    preview.value = e.target.result
+  }
+  // ファイルを読み込む
+  // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
+  reader.readAsDataURL(event.target.files[0])
+  image.value = event.target.files[0]
+};
+// 入力欄の値とプレビュー表示をクリアするメソッド
+const reset = () => {
+  preview.value = ''
+  image.value = null
+  document.querySelector('#icon_image').value = null
+};
+
 const searchAddress = () => {
-  new YubinBangoCore(user.user_detail.zip, (value) => {
-    user.user_detail.pref = value.region_id; // 都道府県
-    user.user_detail.address = value.locality; // 市区町村
-    user.user_detail.address += value.street; // 町域
+  new YubinBangoCore(user_detail.value.zip, (value) => {
+    user_detail.value.pref = value.region_id; // 都道府県
+    user_detail.value.address = value.locality; // 市区町村
+    user_detail.value.address += value.street; // 町域
   });
 };
 </script>

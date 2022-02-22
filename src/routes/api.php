@@ -32,8 +32,9 @@ Route::group([
     //メールアドレス更新
     Route::put('/user/profile-information', 'ProfileInformationController@update')->name('user-profile-information.update'); // Laravel\Fortify\Http\Controllers\ProfileInformationControllerからコピー
 });
-
-// トークンリフレッシュ
+Route::get('/', function () {
+    return "Hello World";
+});
 Route::get('/reflesh-token', function (Illuminate\Http\Request $request) {
     $request->session()->regenerateToken();
 

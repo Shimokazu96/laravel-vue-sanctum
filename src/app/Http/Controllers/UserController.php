@@ -47,7 +47,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return $user->with(['user_detail'])->first() ?? abort(404);
+        return User::where('id', $user->id)->with('user_detail')->first() ?? abort(404);
     }
 
     /**
@@ -70,14 +70,16 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user)
     {
-        $user->fill($request->except(['user_detail']));
+        $user->fill([
+            "name"  => $request->name,
+        ]);
         $user->save();
 
         $user_detail = $user->user_detail()->first();
-        $user_detail->fill($request->input('user_detail'));
+        $user_detail->fill($request->except(['name']));
         $user_detail->save();
 
-        return response()->json($user->with(['user_detail'])->first(), 200) ??  response()->json([], 500);
+        return response()->json(User::where('id', $user->id)->with('user_detail')->first(), 200) ??  response()->json([], 500);
     }
 
     /**
