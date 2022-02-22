@@ -28,6 +28,7 @@ class CreateUserDetailsTable extends Migration
             // $table->string('city')->nullable();
             $table->string('address')->nullable();
             $table->string('building')->nullable();
+            $table->string('image')->nullable();
             // $table->integer('gender')->nullable();
             $table->date('birthday')->nullable();
             $table->text('introduction')->nullable();

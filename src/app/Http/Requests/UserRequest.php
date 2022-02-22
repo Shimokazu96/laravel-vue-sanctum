@@ -27,8 +27,9 @@ class UserRequest extends FormRequest
         return [
             'name'                    => 'required',
             // 'email'                   => ['required', 'email', Rule::unique('users')->ignore($this->user)],
-            'user_detail.tel'         => ['nullable', 'numeric', 'digits_between:8,11'],
-            'user_detail.zip'         => ['nullable', 'numeric'],
+            'tel'         => ['nullable', 'numeric', 'digits_between:8,11'],
+            'zip'         => ['nullable', 'numeric'],
+            'image'       => ['nullable', 'file','mimes:jpg,jpeg,png'],
         ];
     }
     /**
@@ -38,8 +39,9 @@ class UserRequest extends FormRequest
     public function attributes()
     {
         return [
-            'user_detail.tel'         => '電話番号',
-            'user_detail.zip'         => '郵便番号',
+            'tel'         => '電話番号',
+            'zip'         => '郵便番号',
+            'image'       => 'アイコン',
         ];
     }
 }
