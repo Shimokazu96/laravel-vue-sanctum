@@ -55,7 +55,7 @@ export default defineComponent({
             setTimeout(closeMessage, 6000);
           });
       } catch (err) {
-        console.log("Failure");
+        console.log(err);
       }
     };
 

@@ -61,7 +61,7 @@
               メールアドレスを更新する
             </button>
           </form>
-            <h2 class="text-3xl mt-2 mb-2 font-bold">パスワード変更</h2>
+          <h2 class="text-3xl mt-2 mb-2 font-bold">パスワード変更</h2>
           <form class="form" @submit.prevent="updatePassword">
             <div class="mb-2">
               <input
@@ -132,21 +132,17 @@ const updatePasswordErrors = computed(
 const apiStatus = computed(() => store.state.auth.apiStatus);
 const emailVerified = computed(() => store.getters["auth/emailVerified"]);
 const getUser = async () => {
-  try {
-    await axios.get(`/api/user/${id.value}`).then((response) => {
-      if (response.status !== OK) {
-        store.commit("error/setCode", response.status);
-        return false;
-      }
-      //メールアドレスを変更した場合認証ページにリダイレクトさせる
-      if (!response.data.email_verified_at) {
-        router.push("/email/verify");
-      }
-      email.value = response.data.email;
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  await axios.get(`/api/user/${id.value}`).then((response) => {
+    if (response.status !== OK) {
+      store.commit("error/setCode", response.status);
+      return false;
+    }
+    //メールアドレスを変更した場合認証ページにリダイレクトさせる
+    if (!response.data.email_verified_at) {
+      router.push("/email/verify");
+    }
+    email.value = response.data.email;
+  });
 };
 onMounted(() => {
   getUser();
@@ -179,5 +175,5 @@ const clearError = () => {
   store.commit("auth/setUpdateEmailErrorMessages", null);
   store.commit("auth/setUpdatePasswordErrorMessages", null);
 };
-    clearError();
+clearError();
 </script>

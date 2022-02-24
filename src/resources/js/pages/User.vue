@@ -75,20 +75,16 @@ import { useStore } from "vuex";
 const user = ref("");
 
 const getUser = async () => {
-  try {
-    await axios
-      .get("/api/user")
-      .then((response) => {
-        console.log("ログイン済み");
-        user.value = response.data;
-      })
-      .catch((error) => {
-        console.log("ログインしてません");
-        console.log(error);
-      });
-  } catch (err) {
-    console.log("Failure");
-  }
+  await axios
+    .get("/api/user")
+    .then((response) => {
+      console.log("ログイン済み");
+      user.value = response.data;
+    })
+    .catch((error) => {
+      console.log("ログインしてません");
+      console.log(error);
+    });
 };
 getUser();
 

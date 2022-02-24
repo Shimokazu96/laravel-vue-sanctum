@@ -52,7 +52,7 @@ export default defineComponent({
         await store.dispatch("auth/logout");
         router.push("/login");
       } catch (err) {
-        console.log("Failure");
+        console.log(err);
       }
     };
 
