@@ -77,7 +77,6 @@ export default defineComponent({
           setTimeout(closeMessage, 6000);
         }
       } catch (err) {
-        console.log("Failure");
         console.log(err);
         getMessage.value = "メールを送信に失敗しました。";
         setTimeout(closeMessage, 6000);

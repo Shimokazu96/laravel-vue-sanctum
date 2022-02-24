@@ -98,7 +98,7 @@ export default defineComponent({
           router.push("/email/verify");
         }
       } catch (err) {
-        console.log("Failure");
+        console.log(err);
       }
     };
 

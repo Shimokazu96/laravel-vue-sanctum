@@ -20,5 +20,7 @@ class UserDetail extends Model
         'address',
         'building',
         'birthday',
+        'image',
     ];
+
 }

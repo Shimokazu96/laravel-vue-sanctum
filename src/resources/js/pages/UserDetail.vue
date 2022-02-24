@@ -9,12 +9,18 @@
             <div class="image overflow-hidden">
               <div class="w-40 h-40 m-auto">
                 <img
-                  v-if="!image"
+                  v-if="image_url && !preview"
+                  class="w-40 h-40 m-auto rounded-full shadow object-cover"
+                  :src="`/storage/${image_url}`"
+                  alt=""
+                />
+                <img v-else-if="preview" :src="preview" class="w-40 h-40 m-auto rounded-full shadow object-cover" alt="" />
+                <img
+                  v-else
                   class="w-40 h-40 m-auto rounded-full shadow object-cover"
                   src="/images/human.jpeg"
                   alt=""
                 />
-                <img v-if="preview" :src="preview" class="w-40 h-40 m-auto rounded-full shadow object-cover" alt="" />
 
               </div>
 
@@ -299,7 +305,7 @@ const props = defineProps({
   },
 });
 const name = ref("");
-const image = ref(null);
+const image_url = ref(""); //ストレージから取得した画像のパス
 const user_detail = ref({
   tel: "",
   birthday: null,
@@ -307,16 +313,8 @@ const user_detail = ref({
   pref: null,
   address: "",
   building: "",
+  image: null,
 });
-// const user_detail = reactive({
-//   tel: "",
-//   birthday: "",
-//   zip: "",
-//   pref: "",
-//   address: "",
-//   building: "",
-//   image: "",
-// });
 
 const id = ref(props.id);
 const preview = ref("");
@@ -331,11 +329,14 @@ const getUser = async () => {
         store.commit("error/setCode", response.status);
         return false;
       }
+      console.log(response.data);
       name.value = response.data.name;
       user_detail.value = response.data.user_detail;
       user_detail.value.pref = response.data.user_detail.pref
         ? response.data.user_detail.pref
         : "";
+      image_url.value = response.data.user_detail.image;
+      reset()
     });
   } catch (err) {
     console.log(err);
@@ -364,7 +365,7 @@ const updateUser = async () => {
   user_detail.value.pref ? formData.append('pref', user_detail.value.pref) : ''
   user_detail.value.address ? formData.append('address', user_detail.value.address) : ''
   user_detail.value.building ? formData.append('building', user_detail.value.building) : ''
-  user_detail.value.image ? formData.append('image', image.value) : ''
+  user_detail.value.image ? formData.append('image', user_detail.value.image) : ''
   for (let value of formData.entries()) {
     console.log(value);
   }
@@ -380,6 +381,8 @@ const updateUser = async () => {
         console.log(response);
         name.value = response.data.name;
         user_detail.value = response.data.user_detail;
+        image_url.value = response.data.user_detail.image;
+        reset()
         store.commit("message/setContent", {
           content: "更新しました。",
           timeout: 6000,
@@ -421,12 +424,12 @@ const onFileChange = (event) => {
   // ファイルを読み込む
   // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
   reader.readAsDataURL(event.target.files[0])
-  image.value = event.target.files[0]
+  user_detail.value.image = event.target.files[0]
 };
 // 入力欄の値とプレビュー表示をクリアするメソッド
 const reset = () => {
   preview.value = ''
-  image.value = null
+  user_detail.value.image = null
   document.querySelector('#icon_image').value = null
 };
 

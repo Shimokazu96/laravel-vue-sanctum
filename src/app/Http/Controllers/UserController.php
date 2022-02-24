@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -76,7 +77,14 @@ class UserController extends Controller
         $user->save();
 
         $user_detail = $user->user_detail()->first();
-        $user_detail->fill($request->except(['name']));
+
+        if ($request->File('image')) {
+            $extension = $request->image->extension();
+            $file_name = Str::random(32) . '.' . $extension;
+            $request->file('image')->storeAs('public', $file_name);
+            $user_detail->image = $file_name;
+        }
+        $user_detail->fill($request->except(['name','image']));
         $user_detail->save();
 
         return response()->json(User::where('id', $user->id)->with('user_detail')->first(), 200) ??  response()->json([], 500);

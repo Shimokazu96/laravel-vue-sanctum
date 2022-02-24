@@ -74,7 +74,7 @@ export default defineComponent({
           router.push("/user");
         }
       } catch (err) {
-        console.log("Failure");
+        console.log(err);
       }
     };
 

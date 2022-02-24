@@ -116,7 +116,7 @@ export default defineComponent({
           getMessage.value = "パスワードを更新しました。";
         }
       } catch (err) {
-        console.log("Failure");
+        console.log(err);
       }
     };
 
