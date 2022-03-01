@@ -31,6 +31,15 @@ Route::group([
     });
     //メールアドレス更新
     Route::put('/user/profile-information', 'ProfileInformationController@update')->name('user-profile-information.update'); // Laravel\Fortify\Http\Controllers\ProfileInformationControllerからコピー
+
+    Route::put('/user/{user}/follow', 'UserController@follow')->name('user.follow');
+    Route::delete('/user/{user}/follow', 'UserController@unfollow')->name('user.unfollow');
+});
+
+Route::group([
+    'namespace' => 'App\Http\Controllers',
+], function () {
+    Route::get('/user-list', 'UserController@index')->name('user.list');
 });
 Route::get('/', function () {
     return "Hello World";

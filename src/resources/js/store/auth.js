@@ -11,7 +11,6 @@ const state = {
 const getters = {
   check: (state) => !!state.user, //仮登録状態チェック
   username: (state) => (state.user ? state.user.name : ""),
-  userId: (state) => (state.user ? state.user.id : ""),
   emailVerified: (state) =>
     state.user && state.user.email_verified_at ? true : false, //メール認証済みかチェック
 };

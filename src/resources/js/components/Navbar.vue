@@ -1,34 +1,40 @@
 <template>
   <header class="flex justify-between p-4 border-b items-center">
-    <RouterLink class="font-semibold text-xl leading-tight" to="/">
+    <RouterLink class="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline" to="/">
       Laravel
     </RouterLink>
     <div>
       <RouterLink
+        class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
+        to="/user-list"
+      >
+        search
+      </RouterLink>
+      <RouterLink
         v-if="isLogin"
-        class="font-semibold text-xl leading-tight"
+        class="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
         to="/user"
       >
         {{ username }}
       </RouterLink>
       <button
         v-if="isLogin"
-        class="ml-3 py-1 px-4 border-2 border-green-800 rounded"
+        class="md:mt-0 md:ml-4 px-4 py-2 leading-loose text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
         @click="logout"
       >
         Logout
       </button>
       <RouterLink
         v-if="!isLogin"
-        class="py-1 px-4 border-2 border-green-800 rounded"
+        class="md:mt-0 md:ml-4 px-4 py-2 leading-loose text-xs text-center font-semibold leading-none bg-gray-50 hover:bg-gray-100 rounded-xl"
         to="/login"
-        >サインイン
+        >Sign in
       </RouterLink>
       <RouterLink
         v-if="!isLogin"
-        class="ml-3 py-1 px-4 border-2 border-green-800 rounded"
+        class="md:mt-0 md:ml-4 px-4 py-2 leading-loose text-xs text-center font-semibold leading-none bg-blue-600 text-gray-200 hover:bg-blue-500 hover:text-gray-100 rounded-xl"
         to="/register"
-        >登録する
+        >Sign Up
       </RouterLink>
     </div>
   </header>
