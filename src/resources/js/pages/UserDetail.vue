@@ -323,24 +323,20 @@ const errorMessage = ref({});
 const username = computed(() => store.getters["auth/username"]);
 
 const getUser = async () => {
-  try {
-    await axios.get(`/api/user/${id.value}`).then((response) => {
-      if (response.status !== OK) {
-        store.commit("error/setCode", response.status);
-        return false;
-      }
-      console.log(response.data);
-      name.value = response.data.name;
-      user_detail.value = response.data.user_detail;
-      user_detail.value.pref = response.data.user_detail.pref
-        ? response.data.user_detail.pref
-        : "";
-      image_url.value = response.data.user_detail.image;
-      reset()
-    });
-  } catch (err) {
-    console.log(err);
-  }
+  await axios.get(`/api/user/${id.value}`).then((response) => {
+    if (response.status !== OK) {
+      store.commit("error/setCode", response.status);
+      return false;
+    }
+    console.log(response.data);
+    name.value = response.data.name;
+    user_detail.value = response.data.user_detail;
+    user_detail.value.pref = response.data.user_detail.pref
+      ? response.data.user_detail.pref
+      : "";
+    image_url.value = response.data.user_detail.image;
+    reset()
+  });
 };
 onMounted(() => {
   getUser();

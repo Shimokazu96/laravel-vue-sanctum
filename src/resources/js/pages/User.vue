@@ -45,7 +45,7 @@
           uppercase
           tracking-wide
         "
-        :to="`/user/${userId}`"
+        :to="`/user/${user.id}`"
         >View More
       </RouterLink>
       <RouterLink
@@ -61,7 +61,7 @@
           uppercase
           tracking-wide
         "
-        :to="`/user/${userId}/password`"
+        :to="`/user/${user.id}/password`"
         >Setting
       </RouterLink>
     </div>
@@ -69,25 +69,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
 import { computed } from "vue";
 import { useStore } from "vuex";
-const user = ref("");
-
-const getUser = async () => {
-  await axios
-    .get("/api/user")
-    .then((response) => {
-      console.log("ログイン済み");
-      user.value = response.data;
-    })
-    .catch((error) => {
-      console.log("ログインしてません");
-      console.log(error);
-    });
-};
-getUser();
 
 const store = useStore();
-const userId = computed(() => store.getters["auth/userId"]);
+const user = computed(() => store.state.auth.user);
+
 </script>

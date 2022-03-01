@@ -21,6 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'followed_by_user',
     ];
 
     protected $visible = [
@@ -29,6 +30,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'email_verified_at',
         'user_detail',
+        'followed_by_user',
+    ];
+
+    protected $appends = [
+        'followed_by_user',
     ];
 
     /**
@@ -57,5 +63,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function user_detail()
     {
         return $this->hasOne('App\Models\UserDetail');
+    }
+
+    public function followers()
+    {
+        return $this->belongsToMany('App\Models\User', 'follows', 'followee_id', 'follower_id')->withTimestamps();
+    }
+
+    public function followings()
+    {
+        return $this->belongsToMany('App\Models\User', 'follows', 'follower_id', 'followee_id')->withTimestamps();
+    }
+
+    public function getFollowedByUserAttribute()
+    {
+        return $this->followers()->count() ? true : false;
     }
 }

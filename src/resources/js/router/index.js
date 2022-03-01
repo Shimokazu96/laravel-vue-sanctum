@@ -9,6 +9,7 @@ import VerifyEmail from "../pages/auth/VerifyEmail.vue";
 import ForgotPassword from "../pages/auth/ForgotPassword.vue";
 import ResetPassword from "../pages/auth/ResetPassword.vue";
 import User from "../pages/User.vue";
+import UserList from "../pages/UserList.vue";
 import UserDetail from "../pages/UserDetail.vue";
 import UserPasswordUpdate from "../pages/UserPasswordUpdate.vue";
 import store from "../store";
@@ -46,6 +47,10 @@ const routes = [
           }
         },
         component: Register,
+      },
+      {
+        path: "/user-list",
+        component: UserList,
       },
       {
         path: "/forgot-password",

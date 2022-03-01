@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -14,9 +15,19 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $user)
     {
-        //
+        if(Auth::user()) {
+            $users = User::where("id", "!=", Auth::user()->id)->with(['followers'])->get();
+        } else {
+            $users = User::with(['followers'])->get();
+        }
+        clock($users);
+        foreach($users as $user) {
+            clock($user);
+            clock($user->followed_by_user);
+        }
+        return $users ?? abort(404);
     }
 
     /**
@@ -99,5 +110,32 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function follow(Request $request, User $user)
+    {
+        $followedUser = User::where('id', $user->id)->first();
+
+        if ($followedUser->id === $request->user()->id) {
+            return abort('404', 'Cannot follow yourself.');
+        }
+
+        $request->user()->followings()->detach($followedUser);
+        $request->user()->followings()->attach($followedUser);
+
+        return $followedUser;
+    }
+
+    public function unfollow(Request $request, User $user)
+    {
+        $followedUser = User::where('id', $user->id)->first();
+
+        if ($followedUser->id === $request->user()->id) {
+            return abort('404', 'Cannot follow yourself.');
+        }
+
+        $request->user()->followings()->detach($followedUser);
+
+        return $followedUser;
     }
 }
