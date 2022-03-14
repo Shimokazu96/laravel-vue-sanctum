@@ -16,6 +16,10 @@ import store from "../store";
 import SystemError from "../pages/errors/System.vue";
 import NotFound from "../pages/errors/NotFound.vue";
 
+// 管理画面 /admin
+import AdminIndex from "../pages/admin/AdminIndex.vue";
+import AdminTop from "../pages/admin/AdminTop.vue";
+
 const routes = [
   {
     path: "/",
@@ -108,6 +112,17 @@ const routes = [
       {
         path: "/:pathMatch(.*)*",
         component: NotFound,
+      },
+    ],
+  },
+  {
+    //ここから/admin
+    path: "/admin",
+    component: AdminIndex,
+    children: [
+      {
+        path: "",
+        component: AdminTop,
       },
     ],
   },
