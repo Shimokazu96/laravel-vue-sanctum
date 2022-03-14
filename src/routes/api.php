@@ -15,13 +15,30 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
+// 認証不要
+Route::group([
+    'namespace' => 'App\Http\Controllers',
+], function () {
+    Route::get('/user-list', 'UserController@index')->name('user.list');
+});
 
+Route::get('/', function () {
+    return "Hello World";
+});
+Route::get('/reflesh-token', function (Illuminate\Http\Request $request) {
+    $request->session()->regenerateToken();
+
+    return response()->json();
+});
+
+
+// user ログイン認証後
 Route::group([
     'namespace' => 'App\Http\Controllers',
     'middleware' => ['auth:sanctum']
 ], function() {
     Route::get('/user',function (Request $request) {
-        return Auth::user();
+        return Auth::guard('web')->user();
     })->name('user');
     // ユーザー詳細
     Route::get('/user/{user}', 'UserController@show')->name('user.show');
@@ -36,16 +53,25 @@ Route::group([
     Route::delete('/user/{user}/follow', 'UserController@unfollow')->name('user.unfollow');
 });
 
-Route::group([
-    'namespace' => 'App\Http\Controllers',
-], function () {
-    Route::get('/user-list', 'UserController@index')->name('user.list');
-});
-Route::get('/', function () {
-    return "Hello World";
-});
-Route::get('/reflesh-token', function (Illuminate\Http\Request $request) {
-    $request->session()->regenerateToken();
 
-    return response()->json();
+
+
+Route::group([
+    'namespace' => 'App\Http\Controllers\Admin',
+], function () {
+    // Laravel\Fortify\Http\Controllers\からコピー
+    Route::post('/admin/login', 'LoginController@store');
+    Route::post('/admin/register', 'RegisteredAdminController@store');
+});
+
+// admin ログイン認証後
+Route::group([
+    'namespace' => 'App\Http\Controllers\Admin',
+    'middleware' => ['auth:sanctum']
+], function () {
+    // ログインチェック
+    Route::get('/admin', function (Request $request) {
+        return Auth::guard('admin')->user();
+    })->name('admin');
+    Route::post('/admin/logout', 'LoginController@destroy');
 });

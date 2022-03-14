@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class UserSeeder extends Seeder
+class AdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,11 +14,11 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        \DB::table('users')->insert([
+        \DB::table('admins')->insert([
             [
                 'id' => 1,
-                'name' => 'user',
-                'email' => 'user@example.com',
+                'name' => 'admin',
+                'email' => 'admin@example.com',
                 'email_verified_at' => now(),
                 'password' => \Hash::make('123456789'),
                 'created_at' => now(),
@@ -25,8 +26,8 @@ class UserSeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'name' => 'yamada',
-                'email' => 'yamada@example.com',
+                'name' => 'sato',
+                'email' => 'sato@example.com',
                 'email_verified_at' => now(),
                 'password' => \Hash::make('123456789'),
                 'created_at' => now(),
@@ -34,8 +35,8 @@ class UserSeeder extends Seeder
             ],
             [
                 'id' => 3,
-                'name' => 'tanaka',
-                'email' => 'tanaka@example.com',
+                'name' => 'okada',
+                'email' => 'okada@example.com',
                 'email_verified_at' => now(),
                 'password' => \Hash::make('123456789'),
                 'created_at' => now(),
