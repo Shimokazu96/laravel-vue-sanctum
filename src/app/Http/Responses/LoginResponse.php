@@ -17,7 +17,7 @@ class LoginResponse implements LoginResponseContract
    */
   public function toResponse($request)
   {
-    $user = Auth::user();
+    $user = Auth::guard('web')->user();
     return $request->wantsJson()
       ? response()->json($user, 200)
       : redirect()->intended(Fortify::redirects('login'));

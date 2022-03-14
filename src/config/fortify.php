@@ -61,7 +61,8 @@ return [
     |
     */
 
-    'home' => RouteServiceProvider::HOME,
+    // 'home' => RouteServiceProvider::HOME,
+    'home' => env('NUXT_URL', 'http://localhost:3000'),
 
     /*
     |--------------------------------------------------------------------------
