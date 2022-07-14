@@ -8,7 +8,7 @@ Laravel8(Sanctum) + Vue.js3の環境構築
 |Nginx|1.19|
 |MySQL|8.0|
 |PHP|8.0|
-|Laravel|8.x|
+|Laravel|9.x|
 |Node.js|16.13.2|
 |Vue.js|3.x|
 |Composer|2.0.14|
