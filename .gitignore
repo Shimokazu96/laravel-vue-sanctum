@@ -1,8 +1,10 @@
 src/node_modules
 src/storage/
-src/public
+src/public/css
+src/public/js
+src/DS_Store
 src/storage/log
-src/bootstrap/
+src/bootstrap/cache/*
 /public/hot
 /public/storage
 /storage/*.key
@@ -10,6 +12,7 @@ src/bootstrap/
 src/vendor
 .env
 .env.backup
+.DS_Store
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
