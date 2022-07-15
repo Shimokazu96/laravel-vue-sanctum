@@ -1,5 +1,5 @@
 ## 概要
-Laravel9(Sanctum) + Vue.js3の環境構築
+Laravel9系(fortify + sanctum) + Vue.js3系(SPA)のテンプレート
 
 ## バージョン
 
