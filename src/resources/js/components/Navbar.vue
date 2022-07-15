@@ -50,12 +50,12 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
 
-    const isLogin = computed(() => store.getters["auth/check"]);
-    const username = computed(() => store.getters["auth/username"]);
+    const isLogin = computed(() => store.getters["user/isAuthenticated"]);
+    const username = computed(() => store.getters["user/username"]);
 
     const logout = async () => {
       try {
-        await store.dispatch("auth/logout");
+        await store.dispatch("user/logout");
         router.push("/login");
       } catch (err) {
         console.log(err);

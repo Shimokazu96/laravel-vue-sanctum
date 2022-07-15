@@ -60,9 +60,9 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const forgotPasswordErrors = computed(
-      () => store.state.auth.forgotPasswordErrorMessages
+      () => store.state.user.forgotPasswordErrorMessages
     );
-    const apiStatus = computed(() => store.state.auth.apiStatus);
+    const apiStatus = computed(() => store.state.user.apiStatus);
 
     const closeMessage = () => {
       getMessage.value = "";
@@ -70,7 +70,7 @@ export default defineComponent({
 
     const submit = async () => {
       try {
-        await store.dispatch("auth/forgotPassword", emailForm);
+        await store.dispatch("user/forgotPassword", emailForm);
         if (apiStatus.value) {
           clearError();
           getMessage.value = "メールを送信しました。";
@@ -84,7 +84,7 @@ export default defineComponent({
     };
 
     const clearError = () => {
-      store.commit("auth/setForgotPasswordErrorMessages", null);
+      store.commit("user/setForgotPasswordErrorMessages", null);
     };
     clearError();
 

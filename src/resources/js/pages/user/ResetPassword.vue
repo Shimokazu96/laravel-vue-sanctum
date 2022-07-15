@@ -2,32 +2,44 @@
   <div class="bg-gray-100 flex-auto">
     <div class="flex justify-center mt-16">
       <div class="w-2/5 border bg-white">
-        <div class="my-12 text-center">
-          <h2 class="text-3xl mb-2 font-bold">ユーザの登録</h2>
+        <div v-if="apiStatus" class="my-12 text-center">
+          <div
+            v-if="getMessage"
+            class="bg-green-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-green-700"
+            role="alert"
+          >
+            <div>
+              {{ getMessage }}
+            </div>
+          </div>
+          <RouterLink
+            class="block m-auto w-3/5 text-xl bg-blue-600 text-white py-2 px-2 rounded"
+            to="/login"
+            >サインイン
+          </RouterLink>
+        </div>
+        <div v-if="!apiStatus" class="my-12 text-center">
+          <h2 class="text-3xl mb-2 font-bold">パスワード再設定</h2>
           <form @submit.prevent="register">
             <div v-if="registerErrors" class="my-4 text-red-500">
-              <ul v-if="registerErrors.name">
-                <li v-for="msg in registerErrors.name" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">{{ msg }}</li>
-              </ul>
               <ul v-if="registerErrors.email">
-                <li v-for="msg in registerErrors.email" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">
+                <li
+                  v-for="msg in registerErrors.email"
+                  :key="msg"
+                  class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700"
+                >
                   {{ msg }}
                 </li>
               </ul>
               <ul v-if="registerErrors.password">
-                <li v-for="msg in registerErrors.password" :key="msg" class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700">
+                <li
+                  v-for="msg in registerErrors.password"
+                  :key="msg"
+                  class="flex bg-red-100 rounded-lg p-4 m-auto mb-4 w-3/5 text-sm text-red-700"
+                >
                   {{ msg }}
                 </li>
               </ul>
-            </div>
-            <div class="mb-2">
-              <input
-                type="text"
-                placeholder="名前太郎"
-                class="text-xl w-3/5 p-3 border rounded"
-                id="username"
-                v-model="registerForm.name"
-              />
             </div>
             <div class="mb-2">
               <input
@@ -60,7 +72,7 @@
               type="submit"
               class="text-xl w-3/5 bg-blue-600 text-white py-2 rounded"
             >
-              ユーザの登録
+              パスワードリセット
             </button>
           </form>
         </div>
@@ -70,32 +82,38 @@
 </template>
 
 <script>
-import { defineComponent, reactive, computed } from "vue";
+import { defineComponent, reactive, ref, computed } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 
 export default defineComponent({
-  setup() {
+  props: {
+    token: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
     const store = useStore();
-    const router = useRouter();
+
+    const getMessage = ref("");
 
     const registerForm = reactive({
-      name: "",
+      token: props.token,
       email: "",
       password: "",
       password_confirmation: "",
     });
 
     const registerErrors = computed(
-      () => store.state.auth.registerErrorMessages
+      () => store.state.user.registerErrorMessages
     );
-    const apiStatus = computed(() => store.state.auth.apiStatus);
+    const apiStatus = computed(() => store.state.user.apiStatus);
 
     const register = async () => {
       try {
-        await store.dispatch("auth/register", registerForm);
+        await store.dispatch("user/resetPassword", registerForm);
         if (apiStatus.value) {
-          router.push("/email/verify");
+          getMessage.value = "パスワードを更新しました。";
         }
       } catch (err) {
         console.log(err);
@@ -103,12 +121,14 @@ export default defineComponent({
     };
 
     const clearError = () => {
-      store.commit("auth/setRegisterErrorMessages", null);
+      store.commit("user/setRegisterErrorMessages", null);
     };
     clearError();
 
     return {
+      getMessage,
       registerForm,
+      apiStatus,
       registerErrors,
       register,
     };

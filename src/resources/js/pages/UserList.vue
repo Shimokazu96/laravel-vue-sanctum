@@ -60,7 +60,7 @@ import { useStore } from "vuex";
 
 const store = useStore();
 const userList = ref([]);
-const isLogin = computed(() => store.getters["auth/check"])
+const isLogin = computed(() => store.getters["user/isAuthenticated"])
 
 const getUserList = async () => {
   await axios.get("/api/user-list").then((response) => {

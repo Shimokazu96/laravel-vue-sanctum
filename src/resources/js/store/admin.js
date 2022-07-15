@@ -1,210 +1,204 @@
-import { OK, CREATED, NO_CONTENT, UNPROCESSABLE_ENTITY } from '@/const/util'
-import axios from 'axios'
-import { reactive, Ref, toRefs } from '@nuxtjs/composition-api'
-// export const state = () => ({
-//   admin: null,
-//   apiStatus: null,
-//   loginErrorMessages: null,
-//   registerErrorMessages: null,
-//   forgotPasswordErrorMessages: null,
-// });
+import { OK, CREATED, NO_CONTENT, UNPROCESSABLE_ENTITY } from "../util";
 
-export const state = () => {
-  return toRefs(
-    reactive({
-      admin: null,
-      loginStateConfirm: null, //リロード時にログイン済みか確認する
-      apiStatus: null,
-      loginErrorMessages: null,
-      registerErrorMessages: null,
-      forgotPasswordErrorMessages: null,
-    })
-  )
-}
+const state = {
+    admin: null,
+    apiStatus: null,
+    loginErrorMessages: null,
+    registerErrorMessages: null,
+    forgotPasswordErrorMessages: null,
+};
 
-// https://qiita.com/tubone/items/f5c7e8e79e21b051eec4
-// StateをtoRefs化したことによりcomputeした結果がオブジェクトでかえってきてしまう
-export const getters = {
-  isAuthenticated: (state) => (state.admin.value ? true : false), //ユーザー登録済み
-  adminName: (state) => (state.admin.value ? state.admin.value.name : ''),
-  adminId: (state) => (state.admin.value ? state.admin.value.id : ''),
-  // emailVerified: (state) =>
-  //   state.admin.value && state.admin.value.email_verified_at ? true : false, //メール認証済み
-}
+const getters = {
+    isAuthenticated: (state) => !!state.admin,
+    emailVerified: (state) => state.admin && state.admin.email_verified_at ? true : false, //メール認証済みかチェック
+    rootAdmin: (state) => state.admin && state.admin.role == 1 ? true : false, // フル権限の管理者かどうかチェック
+};
 
-export const mutations = {
-  setAdministrator(state, admin) {
-    state.admin.value = admin
-  },
-  setLoginStateConfirm(state, status) {
-    state.loginStateConfirm.value = status
-  },
-  setApiStatus(state, status) {
-    state.apiStatus.value = status
-  },
-  setLoginErrorMessages(state, messages) {
-    state.loginErrorMessages.value = messages
-  },
-  setRegisterErrorMessages(state, messages) {
-    state.registerErrorMessages.value = messages
-  },
-  setForgotPasswordErrorMessages(state, messages) {
-    state.forgotPasswordErrorMessages.value = messages
-  },
-}
+const mutations = {
+    setAdmin(state, admin) {
+        state.admin = admin;
+    },
+    setApiStatus(state, status) {
+        state.apiStatus = status;
+    },
+    setLoginErrorMessages(state, messages) {
+        state.loginErrorMessages = messages;
+    },
+    setRegisterErrorMessages(state, messages) {
+        state.registerErrorMessages = messages;
+    },
+    setForgotPasswordErrorMessages(state, messages) {
+        state.forgotPasswordErrorMessages = messages;
+    },
+    setUpdateEmailErrorMessages(state, messages) {
+        state.updateEmailErrorMessages = messages;
+    },
+    setUpdatePasswordErrorMessages(state, messages) {
+        state.updatePasswordErrorMessages = messages;
+    },
+};
 
-export const actions = {
-  // 会員登録
-  async register(context, data) {
-    context.commit('setApiStatus', null)
-    await axios
-      .post('/api/admin/register', data)
-      .then((response) => {
-        console.log(response.data)
+const actions = {
+    // 会員登録
+    async register(context, data) {
+        context.commit("setApiStatus", null);
+        const response = await axios.post("/api/admin/register", data);
+
         if (response.status === CREATED) {
-          context.commit('setApiStatus', true)
-          context.commit('setAdministrator', response.data)
-          return false
+
+            context.commit("setApiStatus", true);
+            context.commit("setAdmin", response.data);
+            return false;
         }
-      })
-      .catch((err) => {
-        console.log(err.response)
-        context.commit('setApiStatus', false)
-        if (err.response.status === UNPROCESSABLE_ENTITY) {
-          context.commit('setRegisterErrorMessages', err.response.data.errors)
+
+        context.commit("setApiStatus", false);
+        if (response.status === UNPROCESSABLE_ENTITY) {
+            context.commit("setRegisterErrorMessages", response.data.errors);
         } else {
-          context.commit('error/setCode', err.response.status, { root: true })
+            // 別モジュール（ストア）のミューテーションを呼び出す場合は第三引数に{ root: true }を定義
+            context.commit("error/setCode", response.status, { root: true });
         }
-      })
-  },
-  // ログイン
-  async login(context, data) {
-    context.commit('setApiStatus', null)
-    // ログイン処理前にCSRFトークンを初期化
-    axios.get('/sanctum/csrf-cookie', { withCredentials: true })
-    await axios
-      .post('/api/admin/login', data)
-      .then((response) => {
-        console.log(response.data)
+    },
+
+    // ログイン(2段階認証)
+    async login(context, data) {
+        context.commit("setApiStatus", null);
+        axios.get("/sanctum/csrf-cookie", { withCredentials: true });
+
+        const response = await axios.post("/api/admin/second-auth", data);
+        console.log(response);
         if (response.status === OK) {
-          context.commit('setApiStatus', true)
-          context.commit('setAdministrator', response.data)
-          return false
+            context.commit("setApiStatus", true);
+            context.commit("setAdmin", response.data);
+            return false;
         }
-      })
-      .catch((err) => {
-        console.log(err)
-        context.commit('setApiStatus', false)
-        if (err.response.status === UNPROCESSABLE_ENTITY) {
-          context.commit('setLoginErrorMessages', err.response.data.errors)
-        } else {
-          context.commit('error/setCode', err.response.status, { root: true })
-        }
-      })
-  },
 
-  // ログアウト
-  async logout(context) {
-    context.commit('setApiStatus', null)
-    await axios
-      .post('/api/admin/logout')
-      .then((response) => {
-        console.log(response.data)
+        context.commit("setApiStatus", false);
+        if (response.status !== OK) {
+            context.commit("setLoginErrorMessages", response.data.message);
+            context.commit("error/setCode", response.status, { root: true });
+        }
+    },
+
+    // ログアウト
+    async logout(context) {
+        context.commit("setApiStatus", null);
+        const response = await axios.post("/api/admin/logout");
+
         if (response.status === NO_CONTENT) {
-          context.commit('setApiStatus', true)
-          context.commit('setAdministrator', null)
-          return false
+            context.commit("setApiStatus", true);
+            context.commit("setAdmin", null);
+            return false;
         }
-      })
-      .catch((err) => {
-        console.log(err.response)
-        context.commit('setApiStatus', false)
-        context.commit('error/setCode', response.status, { root: true })
-      })
-  },
 
-  // ログインユーザーチェック
-  async currentAdministrator(context) {
-    context.commit('setApiStatus', null)
-    await axios
-      .get('/api/admin')
-      .then((response) => {
-        console.log(response)
-        context.commit('setApiStatus', true)
-        context.commit('setLoginStateConfirm', true)
-        context.commit('setAdministrator', response.data)
-        return false
-      })
-      .catch((err) => {
-        console.log(err.response)
-        context.commit('setApiStatus', false)
-        context.commit('setLoginStateConfirm', true)
-        context.commit('error/setCode', err.response.status, { root: true })
-      })
-  },
+        context.commit("setApiStatus", false);
+        context.commit("error/setCode", response.status, { root: true });
+    },
 
-  // // パスワードリセットメール
-  // async forgotPassword(context, data) {
-  //   context.commit('setApiStatus', null)
-  //   await axios
-  //     .post('/api/forgot-password', data)
-  //     .then((response) => {
-  //       console.log(response.data)
-  //       if (response.status === OK) {
-  //         context.commit('setApiStatus', true)
-  //         context.commit(
-  //           'message/setContent',
-  //           {
-  //             content: response.data.message,
-  //             timeout: 6000,
-  //           },
-  //           { root: true }
-  //         )
-  //         return false
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.response)
-  //       context.commit('setApiStatus', false)
-  //       if (err.response.status === UNPROCESSABLE_ENTITY) {
-  //         context.commit(
-  //           'setForgotPasswordErrorMessages',
-  //           err.response.data.errors
-  //         )
-  //       } else {
-  //         context.commit('error/setCode', err.response.status, { root: true })
-  //       }
-  //     })
-  // },
+    // ログインユーザーチェック
+    async currentAdmin(context) {
+        context.commit("setApiStatus", null);
+        const response = await axios.get("/api/admin");
+        console.log(response.data);
+        const admin = response.data || null;
 
-  // // パスワードリセット
-  // async resetPassword(context, data) {
-  //   context.commit('setApiStatus', null)
-  //   await axios
-  //     .post('/api/reset-password', data)
-  //     .then((response) => {
-  //       console.log(response.data)
-  //       if (response.status === OK) {
-  //         context.commit('setApiStatus', true)
-  //         context.commit(
-  //           'message/setContent',
-  //           {
-  //             content: response.data.message,
-  //             timeout: 6000,
-  //           },
-  //           { root: true }
-  //         )
-  //         return false
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log(err.response)
-  //       context.commit('setApiStatus', false)
-  //       if (err.response.status === UNPROCESSABLE_ENTITY) {
-  //         context.commit('setRegisterErrorMessages', err.response.data.errors)
-  //       } else {
-  //         context.commit('error/setCode', err.response.status, { root: true })
-  //       }
-  //     })
-  // },
-}
+        if (response.status === OK) {
+            context.commit("setApiStatus", true);
+            context.commit("setAdmin", admin);
+            return false;
+        }
+
+        context.commit("setApiStatus", false);
+        context.commit("error/setCode", response.status, { root: true });
+    },
+
+    // パスワードリセットメール
+    // async forgotPassword(context, data) {
+    //     context.commit("setApiStatus", null);
+
+    //     const response = await axios.post("/api/admin/forgot-password", data);
+    //     console.log(response);
+    //     if (response.status === OK) {
+    //         context.commit("setApiStatus", true);
+    //         return false;
+    //     }
+
+    //     context.commit("setApiStatus", false);
+    //     if (response.status === UNPROCESSABLE_ENTITY) {
+    //         context.commit(
+    //             "setForgotPasswordErrorMessages",
+    //             response.data.errors
+    //         );
+    //     } else {
+    //         context.commit("error/setCode", response.status, { root: true });
+    //     }
+    // },
+
+    // パスワードリセット
+    // async resetPassword(context, data) {
+    //     context.commit("setApiStatus", null);
+
+    //     const response = await axios.post("/api/admin/reset-password", data);
+    //     console.log(response);
+    //     if (response.status === OK) {
+    //         context.commit("setApiStatus", true);
+    //         return false;
+    //     }
+
+    //     context.commit("setApiStatus", false);
+    //     if (response.status === UNPROCESSABLE_ENTITY) {
+    //         context.commit("setRegisterErrorMessages", response.data.errors);
+    //     } else {
+    //         context.commit("error/setCode", response.status, { root: true });
+    //     }
+    // },
+    // メールアドレス更新
+    async updateEmail(context, data) {
+        context.commit("setApiStatus", null);
+
+        const response = await axios.put(`/api/admin/profile-information`, data);
+        console.log(response);
+        if (response.status === OK) {
+            context.commit("setApiStatus", true);
+            //メールアドレスに変更があった場合、認証状態を更新して認証メールを送る
+            context.commit("setAdmin", response.data);
+            return false;
+        }
+
+        context.commit("setApiStatus", false);
+        if (response.status === UNPROCESSABLE_ENTITY) {
+            context.commit("setUpdateEmailErrorMessages", response.data.errors);
+        } else {
+            context.commit("error/setCode", response.status, { root: true });
+        }
+    },
+    // パスワード更新
+    async updatePassword(context, data) {
+        context.commit("setApiStatus", null);
+
+        const response = await axios.put(`/api/admin/password`, data);
+        console.log(response);
+        if (response.status === OK) {
+            //パスワードが更新されたら強制的にログアウトする
+            context.commit("setApiStatus", true);
+            const admin = await axios.get("/api/admin");
+            context.commit("setAdmin", null);
+            return false;
+        }
+
+        context.commit("setApiStatus", false);
+        if (response.status === UNPROCESSABLE_ENTITY) {
+            context.commit("setUpdatePasswordErrorMessages", response.data.errors);
+        } else {
+            context.commit("error/setCode", response.status, { root: true });
+        }
+    },
+};
+
+export default {
+    namespaced: true,
+    state,
+    getters,
+    mutations,
+    actions,
+};

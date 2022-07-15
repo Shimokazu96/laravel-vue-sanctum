@@ -1,24 +1,20 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 // ページコンポーネントをインポートする
-import Index from "../pages/Index.vue";
-import Top from "../pages/Top.vue";
-import Login from "../pages/auth/Login.vue";
-import Register from "../pages/auth/Register.vue";
-import VerifyEmail from "../pages/auth/VerifyEmail.vue";
-import ForgotPassword from "../pages/auth/ForgotPassword.vue";
-import ResetPassword from "../pages/auth/ResetPassword.vue";
-import User from "../pages/User.vue";
-import UserList from "../pages/UserList.vue";
-import UserDetail from "../pages/UserDetail.vue";
-import UserPasswordUpdate from "../pages/UserPasswordUpdate.vue";
-import store from "../store";
-import SystemError from "../pages/errors/System.vue";
-import NotFound from "../pages/errors/NotFound.vue";
-
-// 管理画面 /admin
-import AdminIndex from "../pages/admin/AdminIndex.vue";
-import AdminTop from "../pages/admin/AdminTop.vue";
+import Index from "@/pages/Index.vue";
+import Top from "@/pages/Top.vue";
+import Login from "@/pages/user/Login.vue";
+import Register from "@/pages/user/Register.vue";
+import VerifyEmail from "@/pages/user/VerifyEmail.vue";
+import ForgotPassword from "@/pages/user/ForgotPassword.vue";
+import ResetPassword from "@/pages/user/ResetPassword.vue";
+import User from "@/pages/User.vue";
+import UserList from "@/pages/UserList.vue";
+import UserDetail from "@/pages/UserDetail.vue";
+import UserPasswordUpdate from "@/pages/UserPasswordUpdate.vue";
+import store from "@/store";
+import SystemError from "@/pages/errors/System.vue";
+import NotFound from "@/pages/errors/NotFound.vue";
 
 const routes = [
   {
@@ -32,7 +28,7 @@ const routes = [
       {
         path: "/login",
         beforeEnter(to, from, next) {
-          if (store.getters["auth/check"]) {
+          if (store.getters["user/isAuthenticated"]) {
             next("/");
           } else {
             next();
@@ -44,7 +40,7 @@ const routes = [
       {
         path: "/register",
         beforeEnter(to, from, next) {
-          if (store.getters["auth/check"]) {
+          if (store.getters["user/isAuthenticated"]) {
             next("/");
           } else {
             next();
@@ -59,7 +55,7 @@ const routes = [
       {
         path: "/forgot-password",
         beforeEnter(to, from, next) {
-          if (store.getters["auth/check"]) {
+          if (store.getters["user/isAuthenticated"]) {
             next("/");
           } else {
             next();
@@ -75,9 +71,9 @@ const routes = [
       {
         path: "/email/verify",
         beforeEnter(to, from, next) {
-          if (store.getters["auth/emailVerified"]) {
+          if (store.getters["user/emailVerified"]) {
             next("/");
-          } else if (!store.getters["auth/check"]) {
+          } else if (!store.getters["user/isAuthenticated"]) {
             next({
               path: "/login",
             });
@@ -115,17 +111,6 @@ const routes = [
       },
     ],
   },
-  {
-    //ここから/admin
-    path: "/admin",
-    component: AdminIndex,
-    children: [
-      {
-        path: "",
-        component: AdminTop,
-      },
-    ],
-  },
 ];
 
 const router = createRouter({
@@ -135,11 +120,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!store.getters["auth/emailVerified"] && store.getters["auth/check"]) {
+    if (!store.getters["user/emailVerified"] && store.getters["user/isAuthenticated"]) {
       next({
         path: "/email/verify",
       });
-    } else if (!store.getters["auth/check"]) {
+    } else if (!store.getters["user/isAuthenticated"]) {
       next({
         path: "/login",
       });

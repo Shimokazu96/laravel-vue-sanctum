@@ -320,7 +320,7 @@ const id = ref(props.id);
 const preview = ref("");
 const store = useStore();
 const errorMessage = ref({});
-const username = computed(() => store.getters["auth/username"]);
+const username = computed(() => store.getters["user/username"]);
 
 const getUser = async () => {
   await axios.get(`/api/user/${id.value}`).then((response) => {

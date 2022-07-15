@@ -64,12 +64,12 @@ export default defineComponent({
       password: "",
     });
 
-    const loginErrors = computed(() => store.state.auth.loginErrorMessages);
-    const apiStatus = computed(() => store.state.auth.apiStatus);
+    const loginErrors = computed(() => store.state.user.loginErrorMessages);
+    const apiStatus = computed(() => store.state.user.apiStatus);
 
     const login = async () => {
       try {
-        await store.dispatch("auth/login", loginForm);
+        await store.dispatch("user/login", loginForm);
         if (apiStatus.value) {
           router.push("/user");
         }
@@ -79,7 +79,7 @@ export default defineComponent({
     };
 
     const clearError = () => {
-      store.commit("auth/setLoginErrorMessages", null);
+      store.commit("user/setLoginErrorMessages", null);
     };
     clearError();
 

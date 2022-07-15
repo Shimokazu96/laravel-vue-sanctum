@@ -1,4 +1,7 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js?id=dd08ff9ddcd47a7e23a5",
+    "/js/admin.js": "/js/admin.js?id=ad1f09db389c4c048752",
+    "/js/router/index.js": "/js/router/index.js?id=3fb3625aa1b0d9bb37af",
+    "/js/router/admin.js": "/js/router/admin.js?id=8ac3f88ad6063c307dcc",
+    "/css/app.css": "/css/app.css?id=5af8233e84fcb3d3da85"
 }

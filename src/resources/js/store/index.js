@@ -1,12 +1,14 @@
 import { createStore } from "vuex";
 
-import auth from "./auth";
+import admin from "./admin";
+import user from "./user";
 import error from "./error";
 import message from './message'
 
 const store = createStore({
     modules: {
-        auth,
+        admin,
+        user,
         error,
         message
     },

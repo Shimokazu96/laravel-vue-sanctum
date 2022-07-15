@@ -124,13 +124,13 @@ const router = useRouter();
 const store = useStore();
 const id = ref(props.id);
 const updateEmailErrors = computed(
-  () => store.state.auth.updateEmailErrorMessages
+  () => store.state.user.updateEmailErrorMessages
 );
 const updatePasswordErrors = computed(
-  () => store.state.auth.updatePasswordErrorMessages
+  () => store.state.user.updatePasswordErrorMessages
 );
-const apiStatus = computed(() => store.state.auth.apiStatus);
-const emailVerified = computed(() => store.getters["auth/emailVerified"]);
+const apiStatus = computed(() => store.state.user.apiStatus);
+const emailVerified = computed(() => store.getters["user/emailVerified"]);
 const getUser = async () => {
   await axios.get(`/api/user/${id.value}`).then((response) => {
     if (response.status !== OK) {
@@ -149,7 +149,7 @@ onMounted(() => {
 });
 const updateEmail = async () => {
   try {
-    await store.dispatch("auth/updateEmail", { email: email.value });
+    await store.dispatch("user/updateEmail", { email: email.value });
     if (apiStatus.value) {
       //メールアドレスを変更した場合認証ページにリダイレクトさせる
       if (!emailVerified.value) {
@@ -162,7 +162,7 @@ const updateEmail = async () => {
 };
 const updatePassword = async () => {
   try {
-    await store.dispatch("auth/updatePassword", passwordForm);
+    await store.dispatch("user/updatePassword", passwordForm);
     if (apiStatus.value) {
       // パスワードが更新されたら強制的にログアウトする
       router.push("/login");
@@ -172,8 +172,8 @@ const updatePassword = async () => {
   }
 };
 const clearError = () => {
-  store.commit("auth/setUpdateEmailErrorMessages", null);
-  store.commit("auth/setUpdatePasswordErrorMessages", null);
+  store.commit("user/setUpdateEmailErrorMessages", null);
+  store.commit("user/setUpdatePasswordErrorMessages", null);
 };
 clearError();
 </script>
