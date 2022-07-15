@@ -1,5 +1,5 @@
 ## 概要
-Laravel8(Sanctum) + Vue.js3の環境構築
+Laravel9(Sanctum) + Vue.js3の環境構築
 
 ## バージョン
 

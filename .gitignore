@@ -1,6 +1,9 @@
 src/node_modules
 src/storage/
-src/public
+src/public/storage
+src/public/js
+src/public/css
+src/public/.DS_Store
 src/storage/log
 src/bootstrap/
 /public/hot
@@ -18,3 +21,4 @@ yarn-error.log
 sftp.json
 settings.json
 coding_data
+.DS_Store
