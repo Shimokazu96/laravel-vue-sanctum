@@ -3,7 +3,7 @@
 namespace App\Actions\Admin;
 
 use Laravel\Fortify\Rules\Password;
-
+use App\Rules\AlphaNumHalf;
 trait PasswordValidationRules
 {
     /**
@@ -13,6 +13,7 @@ trait PasswordValidationRules
      */
     protected function passwordRules()
     {
-        return ['required', 'string', new Password, 'confirmed'];
+        return ['required', 'string', new AlphaNumHalf, 'confirmed'];
+        // return ['required', 'string', new Password, 'confirmed'];
     }
 }

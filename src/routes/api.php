@@ -52,26 +52,3 @@ Route::group([
     Route::put('/user/{user}/follow', 'UserController@follow')->name('user.follow');
     Route::delete('/user/{user}/follow', 'UserController@unfollow')->name('user.unfollow');
 });
-
-
-
-
-Route::group([
-    'namespace' => 'App\Http\Controllers\Admin',
-], function () {
-    // Laravel\Fortify\Http\Controllers\からコピー
-    Route::post('/admin/login', 'LoginController@store');
-    Route::post('/admin/register', 'RegisteredAdminController@store');
-});
-
-// admin ログイン認証後
-Route::group([
-    'namespace' => 'App\Http\Controllers\Admin',
-    'middleware' => ['auth:sanctum']
-], function () {
-    // ログインチェック
-    Route::get('/admin', function (Request $request) {
-        return Auth::guard('admin')->user();
-    })->name('admin');
-    Route::post('/admin/logout', 'LoginController@destroy');
-});

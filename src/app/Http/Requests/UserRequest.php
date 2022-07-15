@@ -25,11 +25,11 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'                    => 'required',
+            'name'        => 'required',
             // 'email'                   => ['required', 'email', Rule::unique('users')->ignore($this->user)],
             'tel'         => ['nullable', 'numeric', 'digits_between:8,11'],
             'zip'         => ['nullable', 'numeric'],
-            'image'       => ['nullable', 'file','mimes:jpg,jpeg,png'],
+            'image'       => ['nullable', 'file','max:3072','mimes:jpg,jpeg,png'],
         ];
     }
     /**

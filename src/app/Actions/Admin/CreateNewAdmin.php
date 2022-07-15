@@ -35,6 +35,7 @@ class CreateNewAdmin
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'available' => $input['available'],
         ]);
     }
 }
