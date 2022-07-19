@@ -53,12 +53,6 @@ Route::group([
     //メールアドレス更新
     Route::put('/users/{user}/profile-information', 'UserProfileInformationController@update');
     Route::put('/users/{user}/password', 'UserPasswordController@update');
-    //ユーザープロフィール
-    Route::get('/users/{user}/profile', 'UserProfileInformationController@UserProfileShow');
-    Route::put('/users/{user}/profile', 'UserProfileInformationController@UserProfileUpdate');
-    //管理者からユーザーへのメモ
-    Route::get('/users/{user}/note', 'UserProfileInformationController@NoteToUserShow');
-    Route::put('/users/{user}/note', 'UserProfileInformationController@NoteToUserUpdate');
     //退会ユーザー一覧
     Route::get('/withdrawal', 'WithdrawalUserController@index');
 });
